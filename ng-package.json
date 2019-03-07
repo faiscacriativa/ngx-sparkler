@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../../dist/sparkler/angular",
+  "lib": {
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "@ngx-formly/core": "NgxFormlyCore",
+      "@ngx-translate/core": "NgxTranslateCore",
+      "@ngx-translate/http-loader": "NgxTranslateHttpLoader",
+      "sweetalert2": "sweetalert2"
+    }
+  }
+}
