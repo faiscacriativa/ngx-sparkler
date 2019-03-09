@@ -41,7 +41,7 @@ export class DialogService {
 
     const options = Object.assign(
       {
-        titleText: this.translate.instant("ui.dialog.errorTitle"),
+        titleText: this.translate.instant("ui.dialog.title.error"),
         html: message.replace("\n", "<br>"),
         type: "error"
       },
@@ -59,7 +59,7 @@ export class DialogService {
 
     const options = Object.assign(
       {
-        titleText: this.translate.instant("ui.dialog.successTitle"),
+        titleText: this.translate.instant("ui.dialog.title.success"),
         html: message.replace("\n", "<br>"),
         type: "success"
       },
@@ -77,7 +77,7 @@ export class DialogService {
 
     const options = Object.assign(
       {
-        titleText: this.translate.instant("ui.dialog.warningTitle"),
+        titleText: this.translate.instant("ui.dialog.title.warning"),
         html: message.replace("\n", "<br>"),
         type: "warning"
       },
