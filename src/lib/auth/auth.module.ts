@@ -8,6 +8,7 @@ import { RouterModule } from "@angular/router";
 
 import { SparklerCoreModule } from "../core/core.module";
 import { SparklerFormsModule } from "../forms/forms.module";
+import { SparklerI18nModule } from "../i18n/i18n.module";
 
 import { LoginComponent } from "./components/login/login.component";
 import { AuthenticationInitializerFactory } from "./factories/authentication-initializer.factory";
@@ -21,7 +22,8 @@ import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bund
     RouterModule,
 
     SparklerCoreModule,
-    SparklerFormsModule
+    SparklerFormsModule,
+    SparklerI18nModule
   ],
   exports: [
     LoginComponent

@@ -1,5 +1,5 @@
 import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 
 import { AddLanguagesNamesFactory } from "./factories/add-languages-names.factory";
 import { LanguageInitializerFactory } from "./factories/language-initializer.factory";
@@ -12,6 +12,8 @@ import {
 } from "./injection-tokens";
 
 @NgModule({
+  imports: [TranslateModule],
+  exports: [TranslateModule]
 })
 export class SparklerI18nModule {
 
