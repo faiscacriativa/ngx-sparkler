@@ -5,6 +5,7 @@ export {
   AUTH_SIGN_UP_ENDPOINT,
   AUTH_USER_PROFILE_ENDPOINT,
   LOG_IN_ROUTE,
+  SIGN_UP_ROUTE,
   USER_DASHBOARD_ROUTE,
   AccessToken,
   AuthenticatedGuard,

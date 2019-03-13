@@ -1,4 +1,4 @@
-export * from "./auth.module"
+export * from "./auth.module";
 
 export * from "./components/login/login.component";
 

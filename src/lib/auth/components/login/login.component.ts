@@ -1,16 +1,14 @@
-import { Component, Inject } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { Router } from "@angular/router";
-// import { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
+import { empty } from "rxjs";
+import { catchError } from "rxjs/operators";
 
-import { FormUtilitiesService } from "../../../forms/services/form-utilities.service";
-
-// import { DialogService } from "../../../ui/services/dialog.service";
-import { LoadingService } from "../../../ui/services/loading.service";
+import { AuthenticationService } from "../../services/authentication.service";
+import { FormUtilitiesService } from "../../../forms";
+import { DialogService, LoadingService } from "../../../ui";
 
 import { FormConfig } from "./form.config";
-import { USER_DASHBOARD_ROUTE } from "../../injection-tokens";
-import { AuthenticationService } from "../../services/authentication.service";
 
 @Component({
   selector: "sprk-login",
@@ -18,21 +16,18 @@ import { AuthenticationService } from "../../services/authentication.service";
 })
 export class LoginComponent {
 
-  public form = new FormGroup({});
+  public form = new FormGroup({ });
   public fields = FormConfig();
   public model = { };
 
   constructor(
     private auth: AuthenticationService,
-  //   private dialog: DialogService,
+    private dialog: DialogService,
     private formUtils: FormUtilitiesService,
     private loading: LoadingService,
-    private router: Router,
-  //   private translate: TranslateService,
-    @Inject(USER_DASHBOARD_ROUTE) private userDashboardRoute: string
+    private translate: TranslateService
   ) {
-    this.formUtils.translateLabels(this.fields, "account.login.labels");
-  //   // console.log(auth.redirectTo);
+    this.formUtils.translateLabels(this.fields, "accounts.login.labels");
   }
 
   public login(event: Event) {
@@ -41,16 +36,18 @@ export class LoginComponent {
     this.loading.show();
 
     this.auth.login(this.model)
+      .pipe(
+        catchError(() => {
+          this.dialog.error(this.translate.instant("accounts.login.failed"));
+          this.loading.hide();
+
+          return empty();
+        }))
       .subscribe(() => {
-        this.router.navigateByUrl(this.userDashboardRoute)
+        this.auth.redirect()
           .then(() => this.loading.hide());
       });
 
-    return false;
-  }
-
-  public loginWithFb(event: Event) {
-    event.preventDefault();
     return false;
   }
 

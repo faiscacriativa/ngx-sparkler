@@ -103,7 +103,6 @@ export class AuthenticationService {
         map((user: User) => {
           this.user$.next(user);
           this.authenticated$.next(true);
-          this.redirect();
 
           return user;
         })
@@ -127,6 +126,17 @@ export class AuthenticationService {
 
         return response;
       }));
+  }
+
+  public redirect(): Promise<boolean> {
+    let redirectTarget = this.userDashboardRoute;
+
+    if (this.redirectTo) {
+      redirectTarget = this.redirectTo;
+      this.redirectTo = undefined;
+    }
+
+    return this.router.navigateByUrl(redirectTarget);
   }
 
   public refreshAccessToken(): Observable<AccessToken> {
@@ -203,17 +213,6 @@ export class AuthenticationService {
     this.authenticated$.next(true);
 
     return user;
-  }
-
-  private redirect() {
-    let redirectTarget = this.userDashboardRoute;
-
-    if (this.redirectTo) {
-      redirectTarget = this.redirectTo;
-      this.redirectTo = undefined;
-    }
-
-    this.router.navigateByUrl(redirectTarget);
   }
 
 }
