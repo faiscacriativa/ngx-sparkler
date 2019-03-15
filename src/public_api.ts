@@ -17,6 +17,7 @@ export {
   EmailVerifierComponent,
   EmailVerificationService,
   LoginComponent,
+  NonAuthenticatedGuard,
   SparklerAuthModule,
   User,
   UserNotVerifiedGuard,

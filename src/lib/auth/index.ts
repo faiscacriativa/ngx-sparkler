@@ -6,6 +6,7 @@ export * from "./components/login/login.component";
 export * from "./factories/authentication-initializer.factory";
 
 export * from "./guards/authenticated.guard";
+export * from "./guards/non-authenticated.guard";
 export * from "./guards/user-not-verified.guard";
 export * from "./guards/user-verified.guard";
 
