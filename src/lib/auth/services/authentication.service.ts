@@ -88,9 +88,13 @@ export class AuthenticationService {
             console.log(error);
           }
 
-          return of({ data: GuestUser });
+          return of(null);
         }),
         map((response: ApiResponse) => {
+          if (!response) {
+            return GuestUser;
+          }
+
           const user = response.data as User;
 
           this.user$.next(user);
