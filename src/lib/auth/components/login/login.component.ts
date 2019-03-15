@@ -5,8 +5,9 @@ import { empty } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { AuthenticationService } from "../../services/authentication.service";
-import { FormUtilitiesService } from "../../../forms";
-import { DialogService, LoadingService } from "../../../ui";
+import { FormUtilitiesService } from "../../../forms/services/form-utilities.service";
+import { DialogService } from "../../../ui/services/dialog.service";
+import { LoadingService } from "../../../ui/services/loading.service";
 
 import { FormConfig } from "./form.config";
 

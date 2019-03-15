@@ -48,8 +48,8 @@ export class UserVerifiedGuard implements CanActivate, CanActivateChild, CanLoad
     return this.userHasEmailVerified();
   }
 
-  protected userHasEmailVerified() {
-    return !!this.auth.user.value.email_verified_at;
+  protected userHasEmailVerified(): boolean {
+    return this.auth.isVerified.value;
   }
 
 }

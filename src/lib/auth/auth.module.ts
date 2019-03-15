@@ -1,3 +1,4 @@
+import { CommonModule } from "@angular/common";
 import {
   APP_INITIALIZER,
   Injector,
@@ -10,15 +11,18 @@ import { SparklerCoreModule } from "../core/core.module";
 import { SparklerFormsModule } from "../forms/forms.module";
 import { SparklerI18nModule } from "../i18n/i18n.module";
 
+import { EmailVerifierComponent } from "./components/email-verifier/email-verifier.component";
 import { LoginComponent } from "./components/login/login.component";
 import { AuthenticationInitializerFactory } from "./factories/authentication-initializer.factory";
 import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bundle";
 
 @NgModule({
   declarations: [
-    LoginComponent
+    EmailVerifierComponent,
+    LoginComponent,
   ],
   imports: [
+    CommonModule,
     RouterModule,
 
     SparklerCoreModule,
@@ -26,10 +30,8 @@ import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bund
     SparklerI18nModule
   ],
   exports: [
+    EmailVerifierComponent,
     LoginComponent
-  ],
-  providers: [
-    AuthenticationHttpInterceptors
   ]
 })
 export class SparklerAuthModule {
@@ -38,6 +40,7 @@ export class SparklerAuthModule {
     return {
       ngModule: SparklerAuthModule,
       providers: [
+        AuthenticationHttpInterceptors,
         {
           provide: APP_INITIALIZER,
           useFactory: AuthenticationInitializerFactory,

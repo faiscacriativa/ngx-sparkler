@@ -21,7 +21,8 @@ import {
 
 const GuestUser: User = {
   avatar: "",
-  first_name: "general.guest"
+  first_name: "general.guest",
+  email_verified_at: null
 };
 
 @Injectable({
@@ -37,19 +38,19 @@ export class AuthenticationService {
     return this.authenticated$;
   }
 
-  public get user(): BehaviorSubject<User> {
-    return this.user$;
+  public get isVerified(): BehaviorSubject<boolean> {
+    return this.verified$;
   }
 
-  private get userProfile(): User {
-    const userProfile = localStorage.getItem("user_profile");
-    return userProfile ? JSON.parse(userProfile) : GuestUser;
+  public get user(): BehaviorSubject<User> {
+    return this.user$;
   }
 
   public redirectTo: string;
 
   private authenticated$ = new BehaviorSubject<boolean>(false);
   private user$ = new BehaviorSubject<User>(GuestUser);
+  private verified$ = new BehaviorSubject<boolean>(false);
 
   public static getAccessToken(): string {
     return localStorage.getItem("access_token");
@@ -69,8 +70,6 @@ export class AuthenticationService {
     this.translate.stream(GuestUser.first_name)
       .subscribe((value) => GuestUser.first_name = value);
 
-    this.user$.next(this.userProfile);
-
     this.logInEndpoint = logInEndpoint.replace(/^\//, "");
     this.logOutEndpoint = logOutEndpoint.replace(/^\//, "");
     this.signUpEndpoint = signUpEndpoint.replace(/^\//, "");
@@ -89,9 +88,17 @@ export class AuthenticationService {
             console.log(error);
           }
 
-          return of(GuestUser);
+          return of({ data: GuestUser });
         }),
-        map((response: ApiResponse) => this.storeUserData(response.data as User))
+        map((response: ApiResponse) => {
+          const user = response.data as User;
+
+          this.user$.next(user);
+          this.authenticated$.next(true);
+          this.verified$.next(!!user.email_verified_at);
+
+          return user;
+        })
       );
   }
 
@@ -186,7 +193,6 @@ export class AuthenticationService {
     localStorage.removeItem("access_token");
     localStorage.removeItem("expires_in");
     localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user_profile");
 
     this.user$.next(GuestUser);
     this.authenticated$.next(false);
@@ -200,19 +206,6 @@ export class AuthenticationService {
     localStorage.setItem("refresh_token", token.refresh_token);
 
     return token;
-  }
-
-  private storeUserData(user: User): User {
-    if (!user) {
-      return undefined;
-    }
-
-    localStorage.setItem("user_profile", JSON.stringify(user));
-
-    this.user$.next(user);
-    this.authenticated$.next(true);
-
-    return user;
   }
 
 }
