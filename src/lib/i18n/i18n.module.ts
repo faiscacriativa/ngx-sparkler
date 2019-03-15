@@ -3,13 +3,13 @@ import { TranslateModule, TranslateService } from "@ngx-translate/core";
 
 import { AddLanguagesNamesFactory } from "./factories/add-languages-names.factory";
 import { LanguageInitializerFactory } from "./factories/language-initializer.factory";
-
 import {
   APP_DEFAULT_LANGUAGE,
   APP_LANGUAGES,
   LANGUAGE_INITIALIZED,
   LANGUAGE_NAMES
 } from "./injection-tokens";
+import { CoreHttpInterceptors } from "./interceptors/interceptors-bundle";
 
 @NgModule({
   imports: [TranslateModule],
@@ -21,6 +21,7 @@ export class SparklerI18nModule {
     return {
       ngModule: SparklerI18nModule,
       providers: [
+        CoreHttpInterceptors,
         { provide: APP_LANGUAGES, useValue: new RegExp("(en|pt)", "i") },
         { provide: APP_DEFAULT_LANGUAGE, useValue: "en" },
         {
