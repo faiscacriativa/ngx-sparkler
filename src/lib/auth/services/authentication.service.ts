@@ -140,10 +140,12 @@ export class AuthenticationService {
   }
 
   public redirect(): Promise<boolean> {
-    let redirectTarget = this.userDashboardRoute;
+    let redirectTarget: string = this.userDashboardRoute;
 
     if (this.redirectTo) {
-      redirectTarget = this.redirectTo;
+      const rediretUrl = new URL(this.redirectTo);
+
+      redirectTarget  = `${rediretUrl.pathname}${rediretUrl.search}`;
       this.redirectTo = undefined;
     }
 
