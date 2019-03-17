@@ -1,6 +1,7 @@
 export * from "./auth.module";
 
 export * from "./components/email-verifier/email-verifier.component";
+export * from "./components/password-reset/password-reset.component";
 export * from "./components/login/login.component";
 
 export * from "./factories/authentication-initializer.factory";
@@ -22,3 +23,4 @@ export * from "./interfaces/user";
 
 export * from "./services/authentication.service";
 export * from "./services/email-verification.service";
+export * from "./services/password.service";

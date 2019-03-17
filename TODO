@@ -1,6 +1,7 @@
 General:
   ☐ Write a README
   ☐ Add a Github Page
+  ☐ Provide all injection tokens with default values
 Interceptors:
   Refresh Token:
     ☐ Remove multiple successful calls to /me endpoint, if possible

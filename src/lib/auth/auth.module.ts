@@ -13,6 +13,7 @@ import { SparklerI18nModule } from "../i18n/i18n.module";
 
 import { EmailVerifierComponent } from "./components/email-verifier/email-verifier.component";
 import { LoginComponent } from "./components/login/login.component";
+import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
 import { AuthenticationInitializerFactory } from "./factories/authentication-initializer.factory";
 import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bundle";
 
@@ -20,6 +21,7 @@ import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bund
   declarations: [
     EmailVerifierComponent,
     LoginComponent,
+    PasswordResetComponent
   ],
   imports: [
     CommonModule,
