@@ -85,7 +85,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
                 this.refreshInProgress = false;
                 this.auth.logout().subscribe(() => {
                   this.auth.redirectTo = location.pathname;
-                  this.router.navigateByUrl(this.loginRoute);
+                  // this.router.navigateByUrl(this.loginRoute);
                 });
 
                 return throwError(refreshError);
