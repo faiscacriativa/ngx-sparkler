@@ -20,7 +20,7 @@ import { User } from "../interfaces/user";
 
 const GuestUser: User = {
   avatar: "",
-  first_name: "general.guest",
+  profile: { first_name: "general.guest" },
   email_verified_at: null
 };
 
@@ -66,8 +66,8 @@ export class AuthenticationService {
     private router: Router,
     private translate: TranslateService
   ) {
-    this.translate.stream(GuestUser.first_name)
-      .subscribe((value) => GuestUser.first_name = value);
+    this.translate.stream(GuestUser.profile.first_name)
+      .subscribe((value) => GuestUser.profile.first_name = value);
 
     this.logInEndpoint = logInEndpoint.replace(/^\//, "");
     this.logOutEndpoint = logOutEndpoint.replace(/^\//, "");
