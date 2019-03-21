@@ -16,6 +16,7 @@ export {
   Credentials,
   EmailVerifierComponent,
   EmailVerificationService,
+  IGNORE_REDIRECT_FROM,
   LoginComponent,
   NonAuthenticatedGuard,
   PASSWORD_RESET_ENDPOINT,

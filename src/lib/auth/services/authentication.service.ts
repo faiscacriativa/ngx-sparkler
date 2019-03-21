@@ -1,4 +1,4 @@
-import { Injectable, Inject, isDevMode } from "@angular/core";
+import { Inject, Injectable, isDevMode } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, Observable, of } from "rxjs";
@@ -6,10 +6,6 @@ import { catchError, map, mergeMap } from "rxjs/operators";
 
 import { ApiResponse } from "../../core/interfaces/api-response";
 import { HttpService } from "../../core/services/http.service";
-
-import { AccessToken } from "../interfaces/access-token";
-import { Credentials } from "../interfaces/credentials";
-import { User } from "../interfaces/user";
 import {
   AUTH_LOG_IN_ENDPOINT,
   AUTH_LOG_OUT_ENDPOINT,
@@ -18,6 +14,9 @@ import {
   AUTH_USER_PROFILE_ENDPOINT,
   USER_DASHBOARD_ROUTE
 } from "../injection-tokens";
+import { AccessToken } from "../interfaces/access-token";
+import { Credentials } from "../interfaces/credentials";
+import { User } from "../interfaces/user";
 
 const GuestUser: User = {
   avatar: "",
@@ -141,6 +140,13 @@ export class AuthenticationService {
 
   public redirect(): Promise<boolean> {
     let redirectTarget: string = this.userDashboardRoute;
+
+    // An redirectTo is being defined intermittently.
+    // A log is set here to investigate this case.
+    // TODO: Remove this statements after debug.
+    if (isDevMode) {
+      console.log("Will redirect to: " + this.redirectTo);
+    }
 
     if (this.redirectTo) {
       const rediretUrl = new URL(this.redirectTo);

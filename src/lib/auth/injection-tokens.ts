@@ -8,6 +8,7 @@ export const AUTH_USER_PROFILE_ENDPOINT = new InjectionToken<string>("Authentica
 export const EMAIL_VERIFICATION_ROUTE = new InjectionToken<string>("E-mail Verification Route");
 export const EMAIL_VERIFICATION_ENDPOINT = new InjectionToken<string>("E-mail Verification Check Endpoint");
 export const EMAIL_VERIFICATION_RESEND_ENDPOINT = new InjectionToken<string>("E-mail Verification Resend Endpoint");
+export const IGNORE_REDIRECT_FROM = new InjectionToken<string[]>("Endpoints to ignore Unauthorized signals to redirect");
 export const LOG_IN_ROUTE = new InjectionToken<string>("Log In Route");
 export const PASSWORD_RESET_ENDPOINT = new InjectionToken<string>("Password Request Endpoint");
 export const PASSWORD_RESET_REQUEST_ENDPOINT = new InjectionToken<string>("Password Reset Request Endpoint");

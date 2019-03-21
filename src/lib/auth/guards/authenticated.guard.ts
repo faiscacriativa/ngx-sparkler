@@ -1,16 +1,19 @@
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, isDevMode } from "@angular/core";
 import {
   ActivatedRouteSnapshot,
   CanActivate,
   CanActivateChild,
   CanLoad,
   Route,
+  Router,
   RouterStateSnapshot,
   UrlSegment,
-  UrlTree,
-  Router
+  UrlTree
 } from "@angular/router";
-import { from, Observable, of, BehaviorSubject } from "rxjs";
+import {
+  Observable,
+  of
+} from "rxjs";
 import { map, switchMap, tap } from "rxjs/operators";
 
 import { LOG_IN_ROUTE, SIGN_UP_ROUTE } from "../injection-tokens";
@@ -76,7 +79,13 @@ export class AuthenticatedGuard implements CanActivate, CanActivateChild, CanLoa
       !authenticated &&
       (!pathname.includes(this.loginRoute) && !pathname.includes(this.signUpRoute))
     ) {
+      // TODO: Remove this statements after debug.
+      if (isDevMode()) {
+        console.log("Setting Redirect To: " + location.pathname);
+      }
+
       this.authentication.redirectTo = location.href;
+
       return this.router.parseUrl(this.loginRoute);
     }
 

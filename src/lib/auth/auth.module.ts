@@ -15,6 +15,7 @@ import { EmailVerifierComponent } from "./components/email-verifier/email-verifi
 import { LoginComponent } from "./components/login/login.component";
 import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
 import { AuthenticationInitializerFactory } from "./factories/authentication-initializer.factory";
+import { IGNORE_REDIRECT_FROM } from "./injection-tokens";
 import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bundle";
 
 @NgModule({
@@ -48,6 +49,10 @@ export class SparklerAuthModule {
           useFactory: AuthenticationInitializerFactory,
           deps: [Injector],
           multi: true
+        },
+        {
+          provide: IGNORE_REDIRECT_FROM,
+          useValue: ["/me"]
         }
       ]
     };

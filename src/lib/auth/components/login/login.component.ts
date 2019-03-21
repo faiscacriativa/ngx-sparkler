@@ -1,13 +1,14 @@
+import { HttpErrorResponse } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { empty } from "rxjs";
+import { EMPTY } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import { AuthenticationService } from "../../services/authentication.service";
 import { FormUtilitiesService } from "../../../forms/services/form-utilities.service";
 import { DialogService } from "../../../ui/services/dialog.service";
 import { LoadingService } from "../../../ui/services/loading.service";
+import { AuthenticationService } from "../../services/authentication.service";
 
 import { FormConfig } from "./form.config";
 
@@ -38,11 +39,17 @@ export class LoginComponent {
 
     this.auth.login(this.model)
       .pipe(
-        catchError(() => {
-          this.dialog.error(this.translate.instant("accounts.login.failed"));
+        catchError((response: HttpErrorResponse) => {
+          let message = this.translate.instant("accounts.login.failed");
+
+          if (response.status === 401) {
+            message = response.error.message;
+          }
+
+          this.dialog.error(message);
           this.loading.hide();
 
-          return empty();
+          return EMPTY;
         }))
       .subscribe(() => {
         this.auth.redirect()
