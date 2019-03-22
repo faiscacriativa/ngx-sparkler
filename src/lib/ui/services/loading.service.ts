@@ -2,6 +2,7 @@ import { Inject, Injectable, InjectionToken } from "@angular/core";
 
 export const LOADING_OVERLAY_CLASS_NAME = new InjectionToken<string>("Loading Overlay Class Name");
 export const LOADING_OVERLAY_HIDDEN_CLASS_NAME = new InjectionToken<string>("Loading Overlay Hidden Class Name");
+export const LOADING_OVERLAY_SHOWN_CLASS_NAME = new InjectionToken<string>("Loading Overlay Shown Class Name");
 export const LOADING_OVERLAYED_CLASS_NAME = new InjectionToken<string>("Loading Overlayed Class Name");
 
 @Injectable({
@@ -15,17 +16,20 @@ export class LoadingService {
 
   private overlayedClassName: string;
   private overlayHiddenClassName: string;
+  private overlayShownClassName: string;
 
   constructor(
     @Inject(LOADING_OVERLAY_CLASS_NAME) loadingOverlayClassName: string,
     @Inject(LOADING_OVERLAYED_CLASS_NAME) loadingOverlayedClassName: string,
-    @Inject(LOADING_OVERLAY_HIDDEN_CLASS_NAME) loadingOverlayHiddenClassName: string
+    @Inject(LOADING_OVERLAY_HIDDEN_CLASS_NAME) loadingOverlayHiddenClassName: string,
+    @Inject(LOADING_OVERLAY_SHOWN_CLASS_NAME) loadingOverlayShownClassName: string
   ) {
     this.body = document.querySelector("body");
     this.element = document.querySelector("." + loadingOverlayClassName.replace(/^\./, ""));
 
     this.overlayedClassName = loadingOverlayedClassName;
     this.overlayHiddenClassName = loadingOverlayHiddenClassName;
+    this.overlayShownClassName = loadingOverlayShownClassName;
   }
 
   public show(): void {
@@ -36,6 +40,7 @@ export class LoadingService {
     this.instantiations++;
     this.body.classList.add(this.overlayedClassName);
     this.element.classList.remove(this.overlayHiddenClassName);
+    this.element.classList.add(this.overlayShownClassName);
   }
 
   public hide(): void {
@@ -46,6 +51,7 @@ export class LoadingService {
     }
 
     this.body.classList.remove(this.overlayedClassName);
+    this.element.classList.remove(this.overlayShownClassName);
     this.element.classList.add(this.overlayHiddenClassName);
     this.instantiations = 0;
   }
