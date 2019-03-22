@@ -38,7 +38,8 @@ export {
   HttpOptions,
   HttpService,
   PageNotFoundComponent,
-  SparklerCoreModule
+  SparklerCoreModule,
+  UrlService
 } from "./lib/core/index";
 
 
@@ -58,6 +59,7 @@ export {
 } from "./lib/i18n/index";
 
 export {
+  BackButtonComponent,
   DialogService,
   LOADING_OVERLAY_CLASS_NAME,
   LOADING_OVERLAY_HIDDEN_CLASS_NAME,

@@ -8,3 +8,4 @@ export * from "./interfaces/api-response";
 export * from "./interfaces/http-options";
 
 export * from "./services/http.service";
+export * from "./services/url.service";

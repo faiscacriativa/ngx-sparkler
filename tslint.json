@@ -12,6 +12,13 @@
       "element",
       "sprk",
       "kebab-case"
+    ],
+    "variable-name": [
+      true,
+      "check-format",
+      "allow-leading-underscore",
+      "ban-keywords",
+      "allow-pascal-case"
     ]
   }
 }

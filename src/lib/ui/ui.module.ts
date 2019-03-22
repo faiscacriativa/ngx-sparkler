@@ -1,5 +1,8 @@
 import { NgModule } from "@angular/core";
 
+import { SparklerI18nModule } from "../i18n/index";
+
+import { BackButtonComponent } from "./components/back-button/back-button.component";
 import {
   LOADING_OVERLAY_CLASS_NAME,
   LOADING_OVERLAY_HIDDEN_CLASS_NAME,
@@ -7,7 +10,11 @@ import {
   LOADING_OVERLAYED_CLASS_NAME
 } from "./services/loading.service";
 
+
 @NgModule({
+  declarations: [BackButtonComponent],
+  imports: [SparklerI18nModule],
+  exports: [BackButtonComponent],
   providers: [
     { provide: LOADING_OVERLAY_CLASS_NAME, useValue: "loading-overlay" },
     { provide: LOADING_OVERLAY_HIDDEN_CLASS_NAME, useValue: "hidden" },
