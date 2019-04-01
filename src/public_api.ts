@@ -39,13 +39,19 @@ export {
   HttpService,
   PageNotFoundComponent,
   SparklerCoreModule,
-  UrlService
+  UrlService,
+
+  convertToUTCDate,
+  getUTCTime
 } from "./lib/core/index";
 
 
 export {
+  DatepickerComponent,
+  DatepickerOptions,
   FormlyHorizontalComponent,
   FormUtilitiesService,
+  SelectOption,
   SparklerFormsModule
 } from "./lib/forms/index";
 

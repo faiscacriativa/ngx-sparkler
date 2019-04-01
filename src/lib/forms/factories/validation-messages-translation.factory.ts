@@ -24,7 +24,8 @@ export function ValidationMessagesTranslationFactory(
             { charsLeft: error.requiredLength - error.actualLength }
           )
         },
-        { name: "pattern", message: translate.instant("validation.pattern") }
+        { name: "pattern", message: translate.instant("validation.pattern") },
+        { name: "telephone", message: translate.instant("validation.telephone") }
       ]
     };
 
