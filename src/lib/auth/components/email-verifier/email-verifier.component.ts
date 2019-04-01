@@ -2,7 +2,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit, Inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { combineLatest, empty } from "rxjs";
+import { combineLatest, EMPTY } from "rxjs";
 import { map, mergeMap, catchError } from "rxjs/operators";
 
 import { ApiResponse, } from "../../../core/interfaces/api-response";
@@ -45,7 +45,7 @@ export class EmailVerifierComponent implements OnInit {
 
           if (!id || !verifyData) {
             this.checkingEmail = false;
-            return empty();
+            return EMPTY;
           }
 
           this.loading.show();
@@ -63,7 +63,7 @@ export class EmailVerifierComponent implements OnInit {
                 this.router.navigateByUrl(this.verificationResendRoute);
               });
 
-            return empty();
+            return EMPTY;
           }
         })
       )
@@ -87,7 +87,7 @@ export class EmailVerifierComponent implements OnInit {
           this.loading.hide();
           this.dialog.error(this.translate.instant("email.verify.resend.failed"));
 
-          return empty();
+          return EMPTY;
         }))
       .subscribe((response: ApiResponse) => {
         this.loading.hide();

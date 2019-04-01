@@ -4,6 +4,7 @@ export const FormConfig = (): FormlyFieldConfig[] => [
   {
     key: "email",
     type: "input",
+    validators: { validation: ["email"] },
     templateOptions: {
       type: "email",
       required: true,

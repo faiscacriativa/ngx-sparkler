@@ -19,6 +19,7 @@ export * from "./interceptors/refresh-token.interceptor";
 
 export * from "./interfaces/access-token";
 export * from "./interfaces/credentials";
+export * from "./interfaces/profile";
 export * from "./interfaces/user";
 
 export * from "./services/authentication.service";

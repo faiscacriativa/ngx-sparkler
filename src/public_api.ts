@@ -25,6 +25,7 @@ export {
   PASSWORD_RESET_TOKEN_VALIDATION_ENDPOINT,
   PasswordResetComponent,
   PasswordService,
+  Profile,
   SparklerAuthModule,
   User,
   UserNotVerifiedGuard,

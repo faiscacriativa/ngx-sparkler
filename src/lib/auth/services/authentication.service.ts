@@ -4,8 +4,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
 
-import { ApiResponse } from "../../core/interfaces/api-response";
-import { HttpService } from "../../core/services/http.service";
+import { ApiResponse, HttpService } from "../../core/index";
+
 import {
   AUTH_LOG_IN_ENDPOINT,
   AUTH_LOG_OUT_ENDPOINT,
@@ -13,16 +13,10 @@ import {
   AUTH_SIGN_UP_ENDPOINT,
   AUTH_USER_PROFILE_ENDPOINT,
   USER_DASHBOARD_ROUTE
-} from "../injection-tokens";
-import { AccessToken } from "../interfaces/access-token";
-import { Credentials } from "../interfaces/credentials";
-import { User } from "../interfaces/user";
+  } from "../injection-tokens";
+import { AccessToken, Credentials, User } from "../interfaces/index";
 
-const GuestUser: User = {
-  avatar: "",
-  profile: { first_name: "general.guest" },
-  email_verified_at: null
-};
+const GuestUser: User = ({ profile: { first_name: "general.guest" } } as User);
 
 @Injectable({
   providedIn: "root"
