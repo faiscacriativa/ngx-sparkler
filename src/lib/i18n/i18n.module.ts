@@ -1,5 +1,12 @@
-import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule } from "@angular/core";
+import {
+  APP_INITIALIZER,
+  Injector,
+  ModuleWithProviders,
+  NgModule
+  } from "@angular/core";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+
+import { DialogService } from "../ui/services/dialog.service";
 
 import { AddLanguagesNamesFactory } from "./factories/add-languages-names.factory";
 import { LanguageInitializerFactory } from "./factories/language-initializer.factory";
@@ -27,7 +34,7 @@ export class SparklerI18nModule {
         {
           provide: APP_INITIALIZER,
           useFactory: LanguageInitializerFactory,
-          deps: [Injector, TranslateService],
+          deps: [DialogService, Injector, TranslateService],
           multi: true
         },
         {
