@@ -33,20 +33,21 @@ export class LoadingService {
   }
 
   public show(): void {
-    if (this.instantiations > 0) {
+    ++this.instantiations;
+
+    if (this.instantiations > 1) {
       return;
     }
 
-    this.instantiations++;
     this.body.classList.add(this.overlayedClassName);
     this.element.classList.remove(this.overlayHiddenClassName);
     this.element.classList.add(this.overlayShownClassName);
   }
 
   public hide(): void {
-    this.instantiations--;
+    --this.instantiations;
 
-    if (this.instantiations > 1) {
+    if (this.instantiations > 0) {
       return;
     }
 
