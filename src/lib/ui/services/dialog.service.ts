@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import Swal, { SweetAlertResult } from "sweetalert2";
+import Swal, { SweetAlertOptions, SweetAlertResult } from "sweetalert2";
+
+// tslint:disable unified-signatures
 
 @Injectable({
   providedIn: "root"
@@ -12,6 +14,7 @@ export class DialogService {
   }
 
   public confirm(message: string, title?: string): Promise<SweetAlertResult>;
+  public confirm(message: string, config?: SweetAlertOptions): Promise<SweetAlertResult>;
   public confirm(message: string, config: any): Promise<SweetAlertResult> {
     if (config instanceof String) {
       config = { titleText: config };
@@ -34,6 +37,7 @@ export class DialogService {
   }
 
   public error(message: string, title?: string): Promise<SweetAlertResult>;
+  public error(message: string, config?: SweetAlertOptions): Promise<SweetAlertResult>;
   public error(message: string, config: any): Promise<SweetAlertResult> {
     if (config instanceof String) {
       config = { titleText: config };
@@ -52,6 +56,7 @@ export class DialogService {
   }
 
   public success(message: string, title?: string): Promise<SweetAlertResult>;
+  public success(message: string, config?: SweetAlertOptions): Promise<SweetAlertResult>;
   public success(message: string, config: any): Promise<SweetAlertResult> {
     if (config instanceof String) {
       config = { titleText: config };
@@ -70,6 +75,7 @@ export class DialogService {
   }
 
   public warning(message: string, title?: string): Promise<SweetAlertResult>;
+  public warning(message: string, config?: SweetAlertOptions): Promise<SweetAlertResult>;
   public warning(message: string, config: any): Promise<SweetAlertResult> {
     if (config instanceof String) {
       config = { titleText: config };
