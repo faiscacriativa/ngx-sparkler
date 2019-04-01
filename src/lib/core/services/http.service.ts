@@ -162,7 +162,7 @@ export class HttpService {
    * details of `patch()`'s return type based on the provided options.
    */
   patch(endpoint: string, body: any | null, options: HttpOptions = { }): Observable<any> {
-    return this.http.patch(endpoint, body, options as any);
+    return this.http.patch(this.apiUrl + endpoint, body, options as any);
   }
 
   /**
@@ -194,7 +194,7 @@ export class HttpService {
    * details of `put()`'s return type based on the provided options.
    */
   put(endpoint: string, body: any | null, options: HttpOptions = { }): Observable<any> {
-    return this.http.put(endpoint, body, options as any);
+    return this.http.put(this.apiUrl + endpoint, body, options as any);
   }
 
 }
