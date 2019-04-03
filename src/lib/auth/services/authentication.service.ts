@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
 
 import { ApiResponse, HttpService } from "../../core/index";
-
 import {
   AUTH_LOG_IN_ENDPOINT,
   AUTH_LOG_OUT_ENDPOINT,
@@ -13,7 +12,7 @@ import {
   AUTH_SIGN_UP_ENDPOINT,
   AUTH_USER_PROFILE_ENDPOINT,
   USER_DASHBOARD_ROUTE
-  } from "../injection-tokens";
+} from "../injection-tokens";
 import { AccessToken, Credentials, User } from "../interfaces/index";
 
 const GuestUser: User = ({ profile: { first_name: "general.guest" } } as User);

@@ -1,8 +1,8 @@
-import { Injectable, Inject } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { ApiResponse } from "../../core/interfaces/api-response";
-import { HttpService } from "../../core/services/http.service";
+import { ApiResponse } from "../../core/interfaces/index";
+import { HttpService } from "../../core/services/index";
 
 import {
   PASSWORD_RESET_ENDPOINT,

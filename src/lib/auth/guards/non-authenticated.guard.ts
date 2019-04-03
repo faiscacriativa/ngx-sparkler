@@ -1,20 +1,16 @@
 import { Inject, Injectable } from "@angular/core";
 import {
-  ActivatedRouteSnapshot,
   CanActivate,
   CanActivateChild,
   CanLoad,
-  Route,
-  RouterStateSnapshot,
-  UrlSegment,
-  UrlTree,
-  Router
+  Router,
+  UrlTree
 } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
 import { USER_DASHBOARD_ROUTE } from "../injection-tokens";
-import { AuthenticationService } from "../services/authentication.service";
+import { AuthenticationService } from "../services/index";
 
 @Injectable({
   providedIn: "root"
@@ -29,10 +25,7 @@ export class NonAuthenticatedGuard implements CanActivate, CanActivateChild, Can
 
   }
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canActivate(): Observable<boolean | UrlTree> {
     return this.isAuthenticated()
       .pipe(map((authenticated: boolean) => {
         const redirectTo = this.getRedirect(authenticated);
@@ -45,17 +38,11 @@ export class NonAuthenticatedGuard implements CanActivate, CanActivateChild, Can
       }));
   }
 
-  canActivateChild(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.canActivate(next, state);
+  canActivateChild(): Observable<boolean | UrlTree> {
+    return this.canActivate();
   }
 
-  canLoad(
-    route: Route,
-    segments: UrlSegment[]
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  canLoad(): Observable<boolean> {
     return this.isAuthenticated()
       .pipe(switchMap((authenticated: boolean) => {
         const redirectTo = this.getRedirect(authenticated);

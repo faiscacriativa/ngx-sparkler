@@ -1,7 +1,7 @@
 import { Location } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 
-import { UrlService } from "../../../core/index";
+import { UrlService } from "../../../core/services/index";
 
 @Component({
   selector: "sprk-back-button",

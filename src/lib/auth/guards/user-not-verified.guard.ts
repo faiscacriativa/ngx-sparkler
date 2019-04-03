@@ -1,12 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  Route,
-  RouterStateSnapshot,
-  UrlSegment,
-  UrlTree
-} from "@angular/router";
-import { Observable } from "rxjs";
+import { UrlTree } from "@angular/router";
 
 import { UserVerifiedGuard } from "./user-verified.guard";
 
@@ -15,10 +8,7 @@ import { UserVerifiedGuard } from "./user-verified.guard";
 })
 export class UserNotVerifiedGuard extends UserVerifiedGuard {
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canActivate(): boolean | UrlTree {
     if (this.userHasEmailVerified()) {
       return this.router.parseUrl("/accounts/dashboard");
     }
@@ -26,17 +16,11 @@ export class UserNotVerifiedGuard extends UserVerifiedGuard {
     return true;
   }
 
-  canActivateChild(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.canActivate(next, state);
+  canActivateChild(): boolean | UrlTree {
+    return this.canActivate();
   }
 
-  canLoad(
-    route: Route,
-    segments: UrlSegment[]
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  canLoad(): boolean {
     return !this.userHasEmailVerified();
   }
 

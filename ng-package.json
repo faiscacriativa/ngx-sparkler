@@ -7,6 +7,10 @@
       "@ngx-formly/core": "NgxFormlyCore",
       "@ngx-translate/core": "NgxTranslateCore",
       "@ngx-translate/http-loader": "NgxTranslateHttpLoader",
+      "google-libphonenumber": "GoogleLibPhoneNumber",
+      "moment": "Moment",
+      "ngx-bootstrap/chronos": "NgxBootstrapChronos",
+      "ngx-bootstrap/datepicker": "NgxBootstrapDatepicker",
       "sweetalert2": "sweetalert2"
     }
   }

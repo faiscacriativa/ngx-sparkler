@@ -1,28 +1,19 @@
 import { CommonModule } from "@angular/common";
-import {
-  APP_INITIALIZER,
-  Injector,
-  ModuleWithProviders,
-  NgModule
-} from "@angular/core";
+import { ModuleWithProviders, NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
-import { SparklerCoreModule } from "../core/core.module";
-import { SparklerFormsModule } from "../forms/forms.module";
-import { SparklerI18nModule } from "../i18n/i18n.module";
+import { SparklerCoreModule } from "../core/index";
+import { SparklerFormsModule } from "../forms/index";
+import { SparklerI18nModule } from "../i18n/index";
 
-import { EmailVerifierComponent } from "./components/email-verifier/email-verifier.component";
-import { LoginComponent } from "./components/login/login.component";
-import { PasswordResetComponent } from "./components/password-reset/password-reset.component";
-import { AuthenticationInitializerFactory } from "./factories/authentication-initializer.factory";
-import { IGNORE_REDIRECT_FROM } from "./injection-tokens";
-import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bundle";
+import { SPARKLER_AUTH_COMPONENTS } from "./components.bundle";
+import { SPARKLER_AUTH_FACTORIES } from "./factories.bundle";
+import { SPARKLER_AUTH_DEFAULTS } from "./injection-tokens";
+import { AuthenticationHttpInterceptors } from "./interceptors.bundle";
 
 @NgModule({
   declarations: [
-    EmailVerifierComponent,
-    LoginComponent,
-    PasswordResetComponent
+    SPARKLER_AUTH_COMPONENTS
   ],
   imports: [
     CommonModule,
@@ -33,8 +24,7 @@ import { AuthenticationHttpInterceptors } from "./interceptors/interceptors-bund
     SparklerI18nModule
   ],
   exports: [
-    EmailVerifierComponent,
-    LoginComponent
+    SPARKLER_AUTH_COMPONENTS
   ]
 })
 export class SparklerAuthModule {
@@ -43,17 +33,9 @@ export class SparklerAuthModule {
     return {
       ngModule: SparklerAuthModule,
       providers: [
-        AuthenticationHttpInterceptors,
-        {
-          provide: APP_INITIALIZER,
-          useFactory: AuthenticationInitializerFactory,
-          deps: [Injector],
-          multi: true
-        },
-        {
-          provide: IGNORE_REDIRECT_FROM,
-          useValue: ["/me"]
-        }
+        SPARKLER_AUTH_DEFAULTS,
+        SPARKLER_AUTH_FACTORIES,
+        AuthenticationHttpInterceptors
       ]
     };
   }

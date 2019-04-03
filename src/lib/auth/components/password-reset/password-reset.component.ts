@@ -1,21 +1,20 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { Router, ActivatedRoute, ParamMap } from "@angular/router";
+import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { empty } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import { ApiResponse } from "../../../core/interfaces/api-response";
-import { FormUtilitiesService } from "../../../forms/services/form-utilities.service";
-import { DialogService } from "../../../ui/services/dialog.service";
-import { LoadingService } from "../../../ui/services/loading.service";
+import { ApiResponse } from "../../../core/interfaces/index";
+import { FormUtilitiesService } from "../../../forms/services/index";
+import { DialogService, LoadingService } from "../../../ui/services/index";
 
 import { PASSWORD_RESET_REQUEST_ROUTE, USER_DASHBOARD_ROUTE } from "../../injection-tokens";
-import { PasswordService } from "../../services/password.service";
+import { PasswordService } from "../../services/index";
 
-import { ResetFormConfig, RequestFormConfig } from "./form.config";
+import { RequestFormConfig, ResetFormConfig } from "./form.config";
 
 @Component({
   selector: "sprk-password-reset",

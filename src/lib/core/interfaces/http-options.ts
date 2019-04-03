@@ -1,6 +1,6 @@
 import { HttpHeaders, HttpParams } from "@angular/common/http";
 
-import { HttpObserve, ResponseType } from "../services/http.service";
+import { HttpObserve, ResponseType } from "../services/index";
 
 export interface HttpOptions {
 

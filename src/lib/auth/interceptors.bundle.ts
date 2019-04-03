@@ -1,7 +1,6 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 
-import { AccessTokenInterceptor } from "./access-token.interceptor";
-import { RefreshTokenInterceptor } from "./refresh-token.interceptor";
+import { AccessTokenInterceptor, RefreshTokenInterceptor } from "./interceptors/index";
 
 export const AuthenticationHttpInterceptors = [
   {

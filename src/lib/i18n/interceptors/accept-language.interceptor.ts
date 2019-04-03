@@ -1,10 +1,10 @@
-import { Inject, Injectable } from "@angular/core";
 import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
   HttpRequest
 } from "@angular/common/http";
+import { Inject, Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 

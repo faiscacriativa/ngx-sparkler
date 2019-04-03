@@ -5,10 +5,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { EMPTY } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import { FormUtilitiesService } from "../../../forms/services/form-utilities.service";
-import { DialogService } from "../../../ui/services/dialog.service";
-import { LoadingService } from "../../../ui/services/loading.service";
-import { AuthenticationService } from "../../services/authentication.service";
+import { FormUtilitiesService } from "../../../forms/services/index";
+import { DialogService, LoadingService } from "../../../ui/services/index";
+
+import { AuthenticationService } from "../../services/index";
 
 import { FormConfig } from "./form.config";
 

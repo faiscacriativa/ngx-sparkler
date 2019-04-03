@@ -5,7 +5,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 
-import { SPARKLER_FACTORIES_PROVIDER } from "./factories/factories.bundle";
+import { SPARKLER_FACTORIES_PROVIDER } from "./factories.bundle";
 import { SPARKLER_FORMLY_COMPONENTS, SPARKLER_FORMLY_CONFIG } from "./formly.config";
 
 @NgModule({

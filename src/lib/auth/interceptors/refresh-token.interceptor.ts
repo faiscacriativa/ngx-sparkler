@@ -14,10 +14,11 @@ import {
   take
 } from "rxjs/operators";
 
-import { API_URL } from "../../core/services/http.service";
+import { API_URL } from "../../core/services/index";
+
 import { AUTH_LOG_IN_ENDPOINT, AUTH_REFRESH_TOKEN_ENDPOINT, IGNORE_REDIRECT_FROM } from "../injection-tokens";
-import { AccessToken } from "../interfaces/access-token";
-import { AuthenticationService } from "../services/authentication.service";
+import { AccessToken } from "../interfaces/index";
+import { AuthenticationService } from "../services/index";
 
 @Injectable()
 export class RefreshTokenInterceptor implements HttpInterceptor {

@@ -1,18 +1,13 @@
 import { Injectable } from "@angular/core";
 import {
-  ActivatedRouteSnapshot,
   CanActivate,
   CanActivateChild,
   CanLoad,
-  Route,
   Router,
-  RouterStateSnapshot,
-  UrlSegment,
   UrlTree
 } from "@angular/router";
-import { Observable } from "rxjs";
 
-import { AuthenticationService } from "../services/authentication.service";
+import { AuthenticationService } from "../services/index";
 
 @Injectable({
   providedIn: "root"
@@ -23,10 +18,7 @@ export class UserVerifiedGuard implements CanActivate, CanActivateChild, CanLoad
 
   }
 
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canActivate(): boolean | UrlTree {
     if (!this.userHasEmailVerified()) {
       return this.router.parseUrl("/email/verify");
     }
@@ -34,17 +26,11 @@ export class UserVerifiedGuard implements CanActivate, CanActivateChild, CanLoad
     return true;
   }
 
-  canActivateChild(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.canActivate(next, state);
+  canActivateChild(): boolean | UrlTree {
+    return this.canActivate();
   }
 
-  canLoad(
-    route: Route,
-    segments: UrlSegment[]
-  ): Observable<boolean> | Promise<boolean> | boolean {
+  canLoad(): boolean {
     return this.userHasEmailVerified();
   }
 

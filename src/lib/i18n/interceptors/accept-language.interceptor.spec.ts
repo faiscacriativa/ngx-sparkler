@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 
-import { AcceptLanguageService } from "./accept-language.service";
+import { AcceptLanguageInterceptor } from "./accept-language.interceptor";
 
-describe("AcceptLanguageService", () => {
+describe("AcceptLanguageInterceptor", () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it("should be created", () => {
-    const service: AcceptLanguageService = TestBed.get(AcceptLanguageService);
+    const service: AcceptLanguageInterceptor = TestBed.get(AcceptLanguageInterceptor);
     expect(service).toBeTruthy();
   });
 });

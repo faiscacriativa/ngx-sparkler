@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 
 import { HttpService } from "../../core/services/http.service";
+
 import {
   EMAIL_VERIFICATION_ENDPOINT,
   EMAIL_VERIFICATION_RESEND_ENDPOINT

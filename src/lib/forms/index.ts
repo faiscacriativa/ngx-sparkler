@@ -1,6 +1,7 @@
+export * from "./components/index";
+export * from "./factories/index";
+export * from "./factories.bundle";
+export * from "./formly.config";
 export * from "./forms.module";
-
-export * from "./interfaces/datepicker-options";
-export * from "./interfaces/select-option";
-
-export * from "./services/form-utilities.service";
+export * from "./interfaces/index";
+export * from "./services/index";

@@ -1,16 +1,15 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { combineLatest, EMPTY } from "rxjs";
-import { map, mergeMap, catchError } from "rxjs/operators";
+import { catchError, map, mergeMap } from "rxjs/operators";
 
-import { ApiResponse, } from "../../../core/interfaces/api-response";
-import { DialogService } from "../../../ui/services/dialog.service";
-import { LoadingService } from "../../../ui/services/loading.service";
+import { ApiResponse } from "../../../core/interfaces/index";
+import { DialogService, LoadingService } from "../../../ui/services/index";
 
 import { EMAIL_VERIFICATION_ROUTE, USER_DASHBOARD_ROUTE } from "../../injection-tokens";
-import { EmailVerificationService } from "../../services/email-verification.service";
+import { EmailVerificationService } from "../../services/index";
 
 @Component({
   selector: "sprk-email-verifier",

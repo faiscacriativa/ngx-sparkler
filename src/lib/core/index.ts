@@ -1,13 +1,8 @@
+export * from "./components/index";
+export * from "./interfaces/index";
+export * from "./services/index";
+export * from "./utils";
+
 export * from "./core.module";
 
-export * from "./components/page-not-found/page-not-found.component";
-
-export * from "./concerns/data-provider";
-
-export * from "./interfaces/api-response";
-export * from "./interfaces/http-options";
-
-export * from "./services/http.service";
-export * from "./services/url.service";
-
-export * from "./utils";
+// export * from "./concerns/data-provider";

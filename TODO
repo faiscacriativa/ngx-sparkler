@@ -6,3 +6,9 @@ Interceptors:
   Refresh Token:
     ☐ Remove multiple successful calls to /me endpoint, if possible
     ☐ Stop trying refresh the access token if access token and/or refresh token is not available
+Core:
+  Components:
+    ☐ Design the Page Not Found HTML
+I18N:
+  Injection Tokens:
+    ☐ Make an token for translate the keys of LANGUAGE_NAMES default values?

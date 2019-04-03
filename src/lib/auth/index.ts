@@ -1,27 +1,11 @@
 export * from "./auth.module";
-
-export * from "./components/email-verifier/email-verifier.component";
-export * from "./components/password-reset/password-reset.component";
-export * from "./components/login/login.component";
-
-export * from "./factories/authentication-initializer.factory";
-
-export * from "./guards/authenticated.guard";
-export * from "./guards/non-authenticated.guard";
-export * from "./guards/user-not-verified.guard";
-export * from "./guards/user-verified.guard";
-
+export * from "./components/index";
+export * from "./components.bundle";
+export * from "./factories/index";
+export * from "./factories.bundle";
+export * from "./guards/index";
 export * from "./injection-tokens";
-
-export * from "./interceptors/access-token.interceptor";
-export * from "./interceptors/interceptors-bundle";
-export * from "./interceptors/refresh-token.interceptor";
-
-export * from "./interfaces/access-token";
-export * from "./interfaces/credentials";
-export * from "./interfaces/profile";
-export * from "./interfaces/user";
-
-export * from "./services/authentication.service";
-export * from "./services/email-verification.service";
-export * from "./services/password.service";
+export * from "./interceptors/index";
+export * from "./interceptors.bundle";
+export * from "./interfaces/index";
+export * from "./services/index";

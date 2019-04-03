@@ -6,11 +6,11 @@
  * found in LICENSE file or at http://faiscacriativa.com.br/sparkler/license.
  */
 
-import { HttpClient, HttpEvent, HttpHeaders, HttpParams, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Observable } from "rxjs";
 
-import { HttpOptions } from "../interfaces/http-options";
+import { HttpOptions } from "../interfaces/index";
 
 export const API_URL = new InjectionToken<string>("API URL");
 

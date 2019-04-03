@@ -1,15 +1,15 @@
 import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 
-import { PageNotFoundComponent } from "./components/page-not-found/page-not-found.component";
+import { PageNotFoundComponent } from "./components/index";
 
 @NgModule({
   declarations: [PageNotFoundComponent],
   imports: [HttpClientModule],
   exports: [
-    HttpClientModule,
+    PageNotFoundComponent,
 
-    PageNotFoundComponent
+    HttpClientModule
   ]
 })
 export class SparklerCoreModule {

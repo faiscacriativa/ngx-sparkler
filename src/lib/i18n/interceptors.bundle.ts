@@ -1,8 +1,8 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 
-import { AcceptLanguageInterceptor } from "./accept-language.interceptor";
+import { AcceptLanguageInterceptor } from "./interceptors/index";
 
-export const CoreHttpInterceptors = [
+export const SPARKLER_I18N_INTERCEPTORS = [
   {
     provide: HTTP_INTERCEPTORS,
     useClass: AcceptLanguageInterceptor,

@@ -3,11 +3,9 @@ import { FormlyConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 
-import { LANGUAGE_INITIALIZED } from "../../i18n/index";
+import { LANGUAGE_INITIALIZED } from "../i18n/injection-tokens";
 
-import { FormlyConfigFactory } from "./formly-config.factory";
-import { SetComponentsLanguageFactory } from "./set-components-language.factory";
-import { ValidationRulesFactory } from "./validation-rules.factory";
+import { FormlyConfigFactory, SetComponentsLanguageFactory, ValidationRulesFactory } from "./factories/index";
 
 export const SPARKLER_FACTORIES_PROVIDER = [
   {

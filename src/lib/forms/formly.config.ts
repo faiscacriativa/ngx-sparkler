@@ -1,6 +1,6 @@
 import { ConfigOption } from "@ngx-formly/core";
-import { DatepickerComponent } from "./components/formly/types/datepicker/datepicker.component";
-import { FormlyHorizontalComponent } from "./components/formly/wrappers/horizontal/horizontal.component";
+
+import { DatepickerComponent, FormlyHorizontalComponent } from "./components/index";
 
 export const SPARKLER_FORMLY_COMPONENTS = [
   // Fields Types

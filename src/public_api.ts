@@ -4,48 +4,56 @@ export {
   AUTH_REFRESH_TOKEN_ENDPOINT,
   AUTH_SIGN_UP_ENDPOINT,
   AUTH_USER_PROFILE_ENDPOINT,
-  EMAIL_VERIFICATION_ROUTE,
   EMAIL_VERIFICATION_ENDPOINT,
   EMAIL_VERIFICATION_RESEND_ENDPOINT,
-  LOG_IN_ROUTE,
-  SIGN_UP_ROUTE,
-  USER_DASHBOARD_ROUTE,
-  AccessToken,
-  AuthenticatedGuard,
-  AuthenticationService,
-  Credentials,
-  EmailVerifierComponent,
-  EmailVerificationService,
+  EMAIL_VERIFICATION_ROUTE,
   IGNORE_REDIRECT_FROM,
-  LoginComponent,
-  NonAuthenticatedGuard,
+  LOG_IN_ROUTE,
   PASSWORD_RESET_ENDPOINT,
   PASSWORD_RESET_REQUEST_ENDPOINT,
   PASSWORD_RESET_REQUEST_ROUTE,
   PASSWORD_RESET_TOKEN_VALIDATION_ENDPOINT,
-  PasswordResetComponent,
-  PasswordService,
+  SIGN_UP_ROUTE,
+  USER_DASHBOARD_ROUTE,
+
+  AccessToken,
+  Credentials,
   Profile,
-  SparklerAuthModule,
   User,
+
+  ChangePasswordComponent,
+  EmailVerifierComponent,
+  LoginComponent,
+  PasswordResetComponent,
+
+  AuthenticatedGuard,
+  NonAuthenticatedGuard,
   UserNotVerifiedGuard,
-  UserVerifiedGuard
+  UserVerifiedGuard,
+
+  AuthenticationService,
+  EmailVerificationService,
+  PasswordService,
+
+  SparklerAuthModule
 } from "./lib/auth/index";
 
 export {
   API_URL,
+
   ApiResponse,
-  DataProvider,
   HttpOptions,
-  HttpService,
+
   PageNotFoundComponent,
-  SparklerCoreModule,
+
+  HttpService,
   UrlService,
 
   convertToUTCDate,
-  getUTCTime
-} from "./lib/core/index";
+  getUTCTime,
 
+  SparklerCoreModule
+} from "./lib/core/index";
 
 export {
   DatepickerOptions,
@@ -62,15 +70,20 @@ export {
   LANGUAGE_INITIALIZED,
   LANGUAGE_NAMES,
   TRANSLATE_LOADER_PROVIDER,
+
   SparklerI18nModule
 } from "./lib/i18n/index";
 
 export {
-  BackButtonComponent,
-  DialogService,
   LOADING_OVERLAY_CLASS_NAME,
   LOADING_OVERLAY_HIDDEN_CLASS_NAME,
+  LOADING_OVERLAY_SHOWN_CLASS_NAME,
   LOADING_OVERLAYED_CLASS_NAME,
+
+  BackButtonComponent,
+
+  DialogService,
   LoadingService,
+
   SparklerUiModule
 } from "./lib/ui/index";

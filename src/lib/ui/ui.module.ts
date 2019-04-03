@@ -2,14 +2,13 @@ import { NgModule } from "@angular/core";
 
 import { SparklerI18nModule } from "../i18n/index";
 
-import { BackButtonComponent } from "./components/back-button/back-button.component";
+import { BackButtonComponent } from "./components/index";
 import {
   LOADING_OVERLAY_CLASS_NAME,
   LOADING_OVERLAY_HIDDEN_CLASS_NAME,
   LOADING_OVERLAY_SHOWN_CLASS_NAME,
   LOADING_OVERLAYED_CLASS_NAME
-} from "./services/loading.service";
-
+} from "./services/index";
 
 @NgModule({
   declarations: [BackButtonComponent],
