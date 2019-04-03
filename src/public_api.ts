@@ -48,11 +48,11 @@ export {
 
 
 export {
-  DatepickerComponent,
   DatepickerOptions,
-  FormlyHorizontalComponent,
-  FormUtilitiesService,
   SelectOption,
+
+  FormUtilitiesService,
+
   SparklerFormsModule
 } from "./lib/forms/index";
 
