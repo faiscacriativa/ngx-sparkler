@@ -10,6 +10,7 @@ export const EMAIL_VERIFICATION_RESEND_ENDPOINT = new InjectionToken<string>("E-
 export const EMAIL_VERIFICATION_ROUTE = new InjectionToken<string>("E-mail Verification Route");
 export const IGNORE_REDIRECT_FROM = new InjectionToken<string[]>("Endpoints to ignore Unauthorized signals to redirect");
 export const LOG_IN_ROUTE = new InjectionToken<string>("Log In Route");
+export const PASSWORD_CHANGE_ENDPOINT = new InjectionToken<string>("Password Change Endpoint");
 export const PASSWORD_RESET_ENDPOINT = new InjectionToken<string>("Password Request Endpoint");
 export const PASSWORD_RESET_REQUEST_ENDPOINT = new InjectionToken<string>("Password Reset Request Endpoint");
 export const PASSWORD_RESET_REQUEST_ROUTE = new InjectionToken<string>("Password Reset Request Route");
@@ -28,6 +29,7 @@ export const SPARKLER_AUTH_DEFAULTS = [
   { provide: EMAIL_VERIFICATION_ROUTE, useValue: "/email/verify" },
   { provide: IGNORE_REDIRECT_FROM, useValue: ["/me"] },
   { provide: LOG_IN_ROUTE, useValue: "/accounts/login" },
+  { provide: PASSWORD_CHANGE_ENDPOINT, useValue: "/password/change" },
   { provide: PASSWORD_RESET_ENDPOINT, useValue: "/password/reset" },
   { provide: PASSWORD_RESET_REQUEST_ENDPOINT, useValue: "/password/email" },
   { provide: PASSWORD_RESET_REQUEST_ROUTE, useValue: "/password/reset" },

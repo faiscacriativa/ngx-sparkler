@@ -4,7 +4,7 @@ import { FormGroup } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { empty } from "rxjs";
+import { EMPTY } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { ApiResponse } from "../../../core/interfaces/index";
@@ -86,7 +86,7 @@ export class PasswordResetComponent implements OnInit {
             this.formUtils.showValidationErrors(this.fields, response.error.data);
           }
 
-          return empty();
+          return EMPTY;
         }))
       .subscribe((response: ApiResponse) => {
         this.loading.hide();
@@ -112,7 +112,7 @@ export class PasswordResetComponent implements OnInit {
             this.formUtils.showValidationErrors(this.fields, response.error.data);
           }
 
-          return empty();
+          return EMPTY;
         }))
       .subscribe((response: ApiResponse) => {
         this.loading.hide();
