@@ -8,9 +8,11 @@
       "@ngx-translate/core": "NgxTranslateCore",
       "@ngx-translate/http-loader": "NgxTranslateHttpLoader",
       "google-libphonenumber": "GoogleLibPhoneNumber",
+      "mobile-detect": "MobileDetect",
       "moment": "Moment",
       "ngx-bootstrap/chronos": "NgxBootstrapChronos",
       "ngx-bootstrap/datepicker": "NgxBootstrapDatepicker",
+      "platform": "Platform",
       "sweetalert2": "sweetalert2"
     }
   }

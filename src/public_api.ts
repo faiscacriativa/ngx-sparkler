@@ -44,9 +44,13 @@ export {
   ApiResponse,
   HttpOptions,
 
+  PhoneFamily,
+  TabletFamily,
+
   PageNotFoundComponent,
 
   HttpService,
+  PlatformService,
   UrlService,
 
   convertToUTCDate,

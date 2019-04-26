@@ -4,5 +4,3 @@ export * from "./services/index";
 export * from "./utils";
 
 export * from "./core.module";
-
-// export * from "./concerns/data-provider";
