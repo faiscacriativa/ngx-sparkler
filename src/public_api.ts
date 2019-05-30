@@ -1,3 +1,5 @@
+export * from "./lib/helpers/index";
+
 export {
   AUTH_LOG_IN_ENDPOINT,
   AUTH_LOG_OUT_ENDPOINT,
