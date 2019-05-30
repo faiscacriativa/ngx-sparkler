@@ -24,7 +24,7 @@ export class BackButtonComponent implements OnInit {
     this.href = this.path;
 
     if (
-      window.history.length > 0 &&
+      history.length > 0 &&
       this.urlService.previousUrl
     ) {
       this.href = this.urlService.previousUrl;
@@ -34,7 +34,7 @@ export class BackButtonComponent implements OnInit {
   public back(event: Event) {
     event.preventDefault();
 
-    if (window.history.length > 0) {
+    if (history.length > 0) {
       this.location.back();
     } else {
       this.location.replaceState(this.path);
