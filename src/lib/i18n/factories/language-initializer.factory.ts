@@ -10,8 +10,8 @@ import { APP_DEFAULT_LANGUAGE, APP_LANGUAGES, LANGUAGE_INITIALIZED } from "../in
 
 function initializeLanguage(
   listeners: any,
-  languageToSet: string,
-  callback?: (languageToSet: string) => void
+  languageSet: string,
+  callback?: (languageSet: string) => void
 ) {
   const initializationPromises: Promise<any>[] = [];
 
@@ -31,7 +31,7 @@ function initializeLanguage(
 
   if (initializationPromises.length === 0) {
     if (callback) {
-      callback.apply(this, [languageToSet]);
+      callback.apply(this, [languageSet]);
     }
 
     return;
@@ -40,7 +40,7 @@ function initializeLanguage(
   Promise.all(initializationPromises)
     .then(() => {
       if (callback) {
-        callback.apply(this, [languageToSet]);
+        callback.apply(this, [languageSet]);
       }
     });
 }
@@ -50,12 +50,12 @@ export function LanguageInitializerFactory(
   injector: Injector,
   translate: TranslateService
 ) {
-  return () => new Promise<any>((resolve: any) => {
+  return () => new Promise<void>((resolve: any, reject: any) => {
     const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
 
     const availableLanguages = injector.get(APP_LANGUAGES);
     const defaultLanguage = injector.get(APP_DEFAULT_LANGUAGE);
-    const initializationListeners: (() => any)[] = injector.get(LANGUAGE_INITIALIZED);
+    const initializationListeners: (() => any)[] = injector.get<Array<() => any>>(LANGUAGE_INITIALIZED, []);
 
     locationInitialized.then(() => {
       const browserLanguage: string = translate.getBrowserLang();
@@ -63,9 +63,10 @@ export function LanguageInitializerFactory(
 
       translate.setDefaultLang(defaultLanguage);
       translate.use(languageToSet)
-        .pipe(catchError(() => {
+        .pipe(
+          catchError(() => {
             if (isDevMode()) {
-              console.log(`Problems with '${languageToSet}' language initialization.`);
+              console.error(`Problems with '${languageToSet}' language initialization.`);
             }
 
             languageToSet = defaultLanguage;
@@ -73,7 +74,8 @@ export function LanguageInitializerFactory(
             return translate.use(defaultLanguage)
               .pipe(catchError(() => {
                 if (isDevMode()) {
-                  console.log(`Problems with '${languageToSet}' language initialization.`);
+                  console.error(`Problems with '${languageToSet}' language initialization.`);
+                  console.error("No languages available to be set.");
                 }
 
                 dialog.error(
@@ -85,20 +87,24 @@ export function LanguageInitializerFactory(
                   }
                 );
 
+                reject();
+
                 return EMPTY;
               }));
           }))
-        .subscribe(
-          () => {
-            initializeLanguage(initializationListeners, languageToSet);
-
-            if (isDevMode()) {
-              console.log(`Language '${languageToSet}' initialized successfully.`);
+        .subscribe(() => {
+          initializeLanguage(
+            initializationListeners,
+            languageToSet,
+            (languageSet) => {
+              if (isDevMode()) {
+                console.log(`Language '${languageSet}' initialized successfully.`);
+              }
             }
+          );
 
-            resolve();
-          }
-        );
+          resolve();
+        });
     });
   });
 }
