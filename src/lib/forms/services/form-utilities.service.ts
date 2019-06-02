@@ -16,7 +16,7 @@ export class FormUtilitiesService {
       const translationKey = translateKeyPrefix.replace(/\.$/, "") + `.${item.key}`;
 
       if (item.fieldGroup) {
-        return this.translateLabels(item.fieldGroup, translateKeyPrefix);
+        this.translateLabels(item.fieldGroup, translateKeyPrefix);
       }
 
       item.templateOptions.label = this.translate.instant(translationKey);
