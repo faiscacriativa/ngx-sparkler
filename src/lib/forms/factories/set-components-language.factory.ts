@@ -7,7 +7,7 @@ export function SetComponentsLanguageFactory(
   translate: TranslateService
 ) {
   return () => new Promise((resolve) => {
-    let locale = "en";
+    let locale = translate.getDefaultLang();
 
     if (translate.currentLang === "pt") {
       locale = "pt-br";
