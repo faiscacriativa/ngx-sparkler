@@ -57,7 +57,7 @@ export function ValidationRulesFactory(
         {
           name: "maxlength",
           message: (error: any) => translate.instant(
-            "validation.maxlength",
+            "validation.maxLength",
             { chars: error.actualLength - error.requiredLength }
           )
         },
