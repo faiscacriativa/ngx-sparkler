@@ -15,7 +15,14 @@ export const SPARKLER_FORMLY_CONFIG: ConfigOption = {
     {
       name: "datepicker",
       component: DatepickerComponent,
-      wrappers: ["form-field"]
+      wrappers: ["form-field"],
+      defaultOptions: {
+        templateOptions: {
+          datepicker: {
+            containerClass: "theme-default"
+          }
+        }
+      }
     }
   ],
   wrappers: [
