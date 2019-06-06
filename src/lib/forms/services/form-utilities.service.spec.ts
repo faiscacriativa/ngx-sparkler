@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -38,10 +38,10 @@ describe("FormUtilitiesService", () => {
     }
   ];
 
-  let fixture;
   let component: TestComponent;
-  let testConfig: FormlyFieldConfig[];
+  let fixture: ComponentFixture<TestComponent>;
   let service: FormUtilitiesService;
+  let testConfig: FormlyFieldConfig[];
   let translate: TranslateService;
 
   @Component({
