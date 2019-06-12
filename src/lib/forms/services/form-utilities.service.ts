@@ -19,7 +19,9 @@ export class FormUtilitiesService {
         this.translateLabels(item.fieldGroup, translateKeyPrefix);
       }
 
-      item.templateOptions.label = this.translate.instant(translationKey);
+      if (item.templateOptions) {
+        item.templateOptions.label = this.translate.instant(translationKey);
+      }
     });
   }
 

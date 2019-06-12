@@ -4,9 +4,10 @@ import {
   LOADING_OVERLAY_CLASS_NAME,
   LOADING_OVERLAY_HIDDEN_CLASS_NAME,
   LOADING_OVERLAY_SHOWN_CLASS_NAME,
-  LOADING_OVERLAYED_CLASS_NAME,
-  LoadingService
-} from "./loading.service";
+  LOADING_OVERLAYED_CLASS_NAME
+} from "../injection-tokens";
+
+import { LoadingService } from "./loading.service";
 
 describe("LoadingService", () => {
   const overlayClassName   = "loading";

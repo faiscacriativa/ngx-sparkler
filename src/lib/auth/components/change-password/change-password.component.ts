@@ -7,12 +7,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { EMPTY } from "rxjs";
 import { catchError } from "rxjs/operators";
 
-import { ApiResponse } from "../../../core/index";
-import { FormUtilitiesService } from "../../../forms/index";
-import { DialogService, LoadingService } from "../../../ui/index";
-
+import { ApiResponse } from "../../../core";
+import { FormUtilitiesService } from "../../../forms";
+import { DialogService, LoadingService } from "../../../ui";
 import { USER_DASHBOARD_ROUTE } from "../../injection-tokens";
-import { PasswordService } from "../../services/index";
+import { PasswordService } from "../../services";
 
 import { FormConfig } from "./form.config";
 
