@@ -3,13 +3,12 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { combineLatest, EMPTY } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, mergeMap } from "rxjs/operators";
 
-import { ApiResponse } from "../../../core/interfaces/index";
-import { DialogService, LoadingService } from "../../../ui/services/index";
-
+import { ApiResponse } from "../../../core";
+import { DialogService, LoadingService } from "../../../ui";
 import { EMAIL_VERIFICATION_ROUTE, USER_DASHBOARD_ROUTE } from "../../injection-tokens";
-import { EmailVerificationService } from "../../services/index";
+import { EmailVerificationService } from "../../services";
 
 @Component({
   selector: "sprk-email-verifier",
@@ -17,12 +16,11 @@ import { EmailVerificationService } from "../../services/index";
 })
 export class EmailVerifierComponent implements OnInit {
 
-  public checkingEmail = true;
-  public emailVerified = false;
+  public checkingEmail: boolean;
 
   constructor(
-    @Inject(USER_DASHBOARD_ROUTE) private userDashboardRoute,
-    @Inject(EMAIL_VERIFICATION_ROUTE) private verificationResendRoute,
+    @Inject(USER_DASHBOARD_ROUTE) private userDashboardRoute: string,
+    @Inject(EMAIL_VERIFICATION_ROUTE) private verificationResendRoute: string,
     private dialog: DialogService,
     private emailVerifier: EmailVerificationService,
     private loading: LoadingService,
@@ -38,9 +36,8 @@ export class EmailVerifierComponent implements OnInit {
 
     combineLatest(this.route.params, this.route.queryParams)
       .pipe(
-        map(params => Object.assign({ }, ...params)),
-        mergeMap((params: { id: number, expires: number,  signature: string }) => {
-          const { id, ...verifyData } = params;
+        mergeMap((params: any) => {
+          const { id, ...verifyData } = Object.assign({ }, ...params);
 
           if (!id || !verifyData) {
             this.checkingEmail = false;
@@ -54,18 +51,15 @@ export class EmailVerifierComponent implements OnInit {
         catchError((response: HttpErrorResponse) => {
           this.loading.hide();
 
+          this.checkingEmail = false;
+
           if (response.status === 403) {
             this.dialog.error(response.error.message)
-              .then(() => {
-                this.checkingEmail = false;
-
-                this.router.navigateByUrl(this.verificationResendRoute);
-              });
-
-            return EMPTY;
+              .then(() => this.router.navigateByUrl(this.verificationResendRoute));
           }
-        })
-      )
+
+          return EMPTY;
+        }))
       .subscribe((response: ApiResponse) => {
         this.loading.hide();
 
@@ -81,6 +75,7 @@ export class EmailVerifierComponent implements OnInit {
 
     this.loading.show();
 
+    // Todo: This resend must comply (more) with REST
     this.emailVerifier.resend()
       .pipe(catchError(() => {
           this.loading.hide();
@@ -95,9 +90,11 @@ export class EmailVerifierComponent implements OnInit {
           this.dialog.warning(response.message);
         } else {
           this.dialog.success(response.message)
-            .then(() => this.router.navigate(["/", "accounts", "dashboard"]));
+            .then(() => this.router.navigateByUrl(this.userDashboardRoute));
         }
       });
+
+    return false;
   }
 
 }
