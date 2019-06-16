@@ -3,12 +3,12 @@ import { Injector } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/mocks/fake-translate-loader";
 import { of, throwError } from "rxjs";
 import { SweetAlertResult } from "sweetalert2";
 
-import { DialogService } from "../../ui";
+import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
+import { DialogService } from "../../ui";
 import { APP_DEFAULT_LANGUAGE, APP_LANGUAGES, LANGUAGE_INITIALIZED } from "../injection-tokens";
 
 import { LanguageInitializerFactory } from "./language-initializer.factory";

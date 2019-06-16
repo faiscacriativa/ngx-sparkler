@@ -7,7 +7,7 @@ import { FormlyFieldConfig, FormlyFieldConfigCache, FormlyFormOptions } from "@n
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import cloneDeep from "lodash/cloneDeep";
 
-import { FakeTranslateLoader, translationsStub } from "projects/ngx-sparkler/src/testing/mocks/fake-translate-loader";
+import { FakeTranslateLoader, translationsStub } from "projects/ngx-sparkler/src/testing/fakes";
 
 import { FormUtilitiesService } from "./form-utilities.service";
 

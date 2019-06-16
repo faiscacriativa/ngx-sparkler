@@ -11,7 +11,7 @@ import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-transla
 import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { of, throwError } from "rxjs";
 
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/mocks/fake-translate-loader";
+import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
 import { API_URL } from "../../../core";
 import { ValidationRulesFactory } from "../../../forms";

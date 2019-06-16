@@ -10,7 +10,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { of, throwError } from "rxjs";
 
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/mocks/fake-translate-loader";
+import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
 import { API_URL } from "../../../core";
 import { FormUtilitiesService } from "../../../forms";

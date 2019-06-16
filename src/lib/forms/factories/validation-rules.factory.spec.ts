@@ -7,7 +7,7 @@ import { FormlyConfig, FormlyFieldConfig, FormlyModule } from "@ngx-formly/core"
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { BsDatepickerModule, BsLocaleService } from "ngx-bootstrap/datepicker";
 
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/mocks/fake-translate-loader";
+import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
 import { SetComponentsLanguageFactory } from "./set-components-language.factory";
 import { ValidationRulesFactory } from "./validation-rules.factory";

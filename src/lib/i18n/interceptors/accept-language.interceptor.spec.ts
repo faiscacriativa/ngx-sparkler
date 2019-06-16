@@ -3,7 +3,7 @@ import { HttpClientTestingModule , HttpTestingController } from "@angular/common
 import { TestBed } from "@angular/core/testing";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/mocks/fake-translate-loader";
+import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
 import { APP_DEFAULT_LANGUAGE } from "../injection-tokens";
 
