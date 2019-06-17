@@ -52,6 +52,7 @@ export class PasswordResetComponent implements OnInit {
           this.model = { token };
           this.fields = ResetFormConfig(this.translate);
           this.formUtils.translateLabels(this.fields, "password.reset.labels");
+
           return;
         }
 
@@ -81,6 +82,10 @@ export class PasswordResetComponent implements OnInit {
       .pipe(
         catchError((response: HttpErrorResponse) => {
           this.loading.hide();
+
+          if (response.status >= 500) {
+            this.dialog.error(response.error.message);
+          }
 
           if (response.error.data) {
             this.formUtils.showValidationErrors(this.fields, response.error.data);
