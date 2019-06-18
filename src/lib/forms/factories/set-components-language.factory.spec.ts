@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+import { async, TestBed } from "@angular/core/testing";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import * as chronos from "ngx-bootstrap/chronos";
 import { BsDatepickerModule, BsLocaleService } from "ngx-bootstrap/datepicker";
@@ -13,53 +13,57 @@ describe("SetComponentsLanguageFactory", () => {
   const languageToBeSet = "pt";
   const localeToBeSet   = "pt-br";
 
-  let bsLocale: BsLocaleService;
-  let translate: TranslateService;
+  let bsLocaleServiceStub: Partial<BsLocaleService>;
+  let translateServiceStub: Partial<TranslateService>;
 
-  beforeEach(() => {
+  let bsLocaleServiceSpy: jasmine.SpyObj<BsLocaleService>;
+  let defineLocaleSpy: jasmine.Spy;
+  let translateServiceSpy: jasmine.SpyObj<TranslateService>;
+
+  beforeEach(async(() => {
+    bsLocaleServiceStub  = jasmine.createSpyObj("BsLocaleService", ["use"]);
+    translateServiceStub = jasmine.createSpyObj("TranslateService", ["getDefaultLang", "instant"]);
+
     TestBed.configureTestingModule({
       imports: [
         BsDatepickerModule.forRoot(),
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
         })
+      ],
+      providers: [
+        { provide: BsLocaleService, useValue: bsLocaleServiceStub },
+        { provide: TranslateService, useValue: translateServiceStub }
       ]
     });
+  }));
 
-    bsLocale  = TestBed.get(BsLocaleService);
-    translate = TestBed.get(TranslateService);
+  beforeEach(() => {
+    bsLocaleServiceSpy  = TestBed.get(BsLocaleService);
 
-    translate.setDefaultLang(defaultLanguage);
-    translate.use(defaultLanguage);
-  });
+    translateServiceSpy = TestBed.get(TranslateService);
+    translateServiceSpy.getDefaultLang.and.returnValue(defaultLanguage);
+    translateServiceSpy.instant.and.callFake((translateKey: string) => translateKey);
 
-  it("should set the default language of components", (done: DoneFn) => {
-    const bsLocalUseSpy = spyOn(bsLocale, "use");
-
-    SetComponentsLanguageFactory(bsLocale, translate)
-      .apply(this)
-      .then(() => {
-        expect(bsLocalUseSpy).toHaveBeenCalledWith(defaultLanguage);
-
-        done();
-      });
-  });
-
-  it("should set the language of components", (done: DoneFn) => {
-    const bsLocalUseSpy = spyOn(bsLocale, "use");
-    const defineLocaleSpy = jasmine.createSpy("defineLocale");
-
+    defineLocaleSpy = jasmine.createSpy("defineLocale");
     spyOnProperty(chronos, "defineLocale", "get").and.returnValue(defineLocaleSpy);
+  });
 
-    translate.use(languageToBeSet);
+  it("should set the default language of components", async () => {
+    await SetComponentsLanguageFactory(bsLocaleServiceSpy, translateServiceSpy).apply(this);
 
-    SetComponentsLanguageFactory(bsLocale, translate)
-      .apply(this)
-      .then(() => {
-        expect(bsLocalUseSpy).toHaveBeenCalledWith(localeToBeSet);
-        expect(defineLocaleSpy).toHaveBeenCalledWith(localeToBeSet, ptBrLocale);
+    expect(bsLocaleServiceSpy.use).toHaveBeenCalledWith(defaultLanguage);
 
-        done();
-      });
+    expect(defineLocaleSpy).not.toHaveBeenCalled();
+  });
+
+  it("should set the language of components", async () => {
+    translateServiceSpy.currentLang = languageToBeSet;
+
+    await SetComponentsLanguageFactory(bsLocaleServiceSpy, translateServiceSpy).apply(this);
+
+    expect(defineLocaleSpy).toHaveBeenCalledWith(localeToBeSet, ptBrLocale);
+
+    expect(bsLocaleServiceSpy.use).toHaveBeenCalledWith(localeToBeSet);
   });
 });

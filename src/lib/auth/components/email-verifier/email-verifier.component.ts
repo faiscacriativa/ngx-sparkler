@@ -20,7 +20,7 @@ export class EmailVerifierComponent implements OnInit {
 
   constructor(
     @Inject(USER_DASHBOARD_ROUTE) private userDashboardRoute: string,
-    @Inject(EMAIL_VERIFICATION_ROUTE) private verificationResendRoute: string,
+    @Inject(EMAIL_VERIFICATION_ROUTE) private emailVerificationRoute: string,
     private dialog: DialogService,
     private emailVerifier: EmailVerificationService,
     private loading: LoadingService,
@@ -55,7 +55,7 @@ export class EmailVerifierComponent implements OnInit {
 
           if (response.status === 403) {
             this.dialog.error(response.error.message)
-              .then(() => this.router.navigateByUrl(this.verificationResendRoute));
+              .then(() => this.router.navigateByUrl(this.emailVerificationRoute));
           }
 
           return EMPTY;

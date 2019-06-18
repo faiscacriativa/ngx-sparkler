@@ -7,23 +7,21 @@ import { UrlService } from "../../../core";
 import { BackButtonComponent } from "./back-button.component";
 
 describe("BackButtonComponent", () => {
+  const previousUrlValue = "/accounts/login";
+  const pathValue        = "/home";
+
   let component: BackButtonComponent;
   let fixture: ComponentFixture<BackButtonComponent>;
-  let location: Location;
+
   let locationStub: Partial<Location>;
-  let urlService: UrlService;
   let urlServiceStub: Partial<UrlService>;
 
-  const pathValue        = "/home";
-  const previousUrlValue = "/accounts/login";
+  let locationSpy: jasmine.SpyObj<Location>;
+  let urlServiceSpy: jasmine.SpyObj<UrlService>;
 
   beforeEach(async(() => {
-    locationStub = {
-      back: () => { },
-      replaceState: ( ) => { }
-    };
-
-    urlServiceStub = { previousUrl: previousUrlValue };
+    locationStub = jasmine.createSpyObj("Location", ["back", "replaceState"]);
+    urlServiceStub = { previousUrl: undefined };
 
     TestBed.configureTestingModule({
       declarations: [ BackButtonComponent ],
@@ -38,8 +36,9 @@ describe("BackButtonComponent", () => {
   beforeEach(() => {
     fixture    = TestBed.createComponent(BackButtonComponent);
     component  = fixture.debugElement.componentInstance;
-    location   = fixture.debugElement.injector.get(Location);
-    urlService = TestBed.get(UrlService);
+
+    locationSpy   = TestBed.get(Location);
+    urlServiceSpy = TestBed.get(UrlService);
 
     component.path = pathValue;
   });
@@ -51,11 +50,12 @@ describe("BackButtonComponent", () => {
   it("should have the href value equals to defined in path property", () => {
     const historyLengthSpy = spyOnProperty(history, "length", "get").and.returnValue(0);
 
-    (urlService as any).previousUrl = undefined;
+    (urlServiceSpy as any).previousUrl = undefined;
 
     fixture.detectChanges();
 
     expect(historyLengthSpy).toHaveBeenCalled();
+
     expect(component.href).toBe(pathValue);
     expect(component.href).not.toBe(previousUrlValue);
   });
@@ -63,44 +63,41 @@ describe("BackButtonComponent", () => {
   it("should have the path value equals previous URL", () => {
     const historyLengthSpy = spyOnProperty(history, "length", "get").and.returnValue(1);
 
-    (urlService as any).previousUrl = previousUrlValue;
+    (urlServiceSpy as any).previousUrl = previousUrlValue;
 
     fixture.detectChanges();
 
     expect(historyLengthSpy).toHaveBeenCalled();
+
     expect(component.href).toBe(previousUrlValue);
     expect(component.href).not.toBe(pathValue);
   });
 
   it("should call Location.back() when clicked", () => {
     const backButton = fixture.debugElement.query(By.css("div > div > a"));
-
-    const historyLengthSpy        = spyOnProperty(history, "length", "get").and.returnValue(1);
-    const locationBackSpy         = spyOn(location, "back");
-    const locationReplaceStateSpy = spyOn(location, "replaceState");
+    const historyLengthSpy = spyOnProperty(history, "length", "get").and.returnValue(1);
 
     fixture.detectChanges();
 
     backButton.triggerEventHandler("click", { preventDefault: () => { } });
 
     expect(historyLengthSpy).toHaveBeenCalled();
-    expect(locationBackSpy).toHaveBeenCalled();
-    expect(locationReplaceStateSpy).not.toHaveBeenCalled();
+
+    expect(locationSpy.back).toHaveBeenCalled();
+    expect(locationSpy.replaceState).not.toHaveBeenCalled();
   });
 
   it("should replace location state when clicked", () => {
     const backButton = fixture.debugElement.query(By.css("div > div > a"));
-
-    const historyLengthSpy         = spyOnProperty(history, "length", "get").and.returnValue(0);
-    const locationBackSpy          = spyOn(location, "back");
-    const locationReplaceSteateSpy = spyOn(location, "replaceState");
+    const historyLengthSpy = spyOnProperty(history, "length", "get").and.returnValue(0);
 
     fixture.detectChanges();
 
     backButton.triggerEventHandler("click", { preventDefault: () => { } });
 
     expect(historyLengthSpy).toHaveBeenCalled();
-    expect(locationReplaceSteateSpy).toHaveBeenCalled();
-    expect(locationBackSpy).not.toHaveBeenCalled();
+
+    expect(locationSpy.back).not.toHaveBeenCalled();
+    expect(locationSpy.replaceState).toHaveBeenCalled();
   });
 });

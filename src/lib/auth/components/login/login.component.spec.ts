@@ -1,5 +1,4 @@
 import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -8,19 +7,12 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyConfig, FormlyModule } from "@ngx-formly/core";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
-import { BsDatepickerModule } from "ngx-bootstrap/datepicker";
 import { of, throwError } from "rxjs";
 
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
+import { FakeEvent, FakePromise, FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
-import { API_URL } from "../../../core";
 import { ValidationRulesFactory } from "../../../forms";
-import {
-  DialogService,
-  LoadingService,
-  SPARKLER_UI_DEFAULTS,
-  SparklerUiModule
-} from "../../../ui";
+import { DialogService, LoadingService } from "../../../ui";
 import { SPARKLER_AUTH_DEFAULTS } from "../../injection-tokens";
 import { AuthenticationService } from "../../services";
 
@@ -31,32 +23,36 @@ describe("LoginComponent", () => {
   let element: DebugElement;
   let fixture: ComponentFixture<LoginComponent>;
 
-  let dialog: DialogService;
-  let loading: LoadingService;
+  let authenticationServiceStub: Partial<AuthenticationService>;
+  let dialogServiceStub: Partial<DialogService>;
+  let loadingServiceStub: Partial<LoadingService>;
+
+  let authenticationServiceSpy: jasmine.SpyObj<AuthenticationService>;
+  let dialogServiceSpy: jasmine.SpyObj<DialogService>;
+  let loadingServiceSpy: jasmine.SpyObj<LoadingService>;
 
   beforeEach(async(() => {
+    authenticationServiceStub = jasmine.createSpyObj("AuthenticationService", ["login", "redirect"]);
+    dialogServiceStub         = jasmine.createSpyObj("DialogService", ["error"]);
+    loadingServiceStub        = jasmine.createSpyObj("LoadingService", ["hide", "show"]);
+
     TestBed.configureTestingModule({
-        declarations: [
-          LoginComponent
-        ],
-        imports: [
-          HttpClientTestingModule,
-          ReactiveFormsModule,
-          RouterTestingModule,
-          BsDatepickerModule.forRoot(),
-          FormlyBootstrapModule,
-          FormlyModule.forRoot(),
-          TranslateModule.forRoot({
-            loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
-          }),
-          SparklerUiModule
-        ],
-        providers: [
-          SPARKLER_AUTH_DEFAULTS,
-          SPARKLER_UI_DEFAULTS,
-          { provide: API_URL, useValue: "https://localhost:8000" }
-        ]
-      })
+      declarations: [LoginComponent],
+      imports: [
+        ReactiveFormsModule,
+        RouterTestingModule,
+        FormlyBootstrapModule,
+        FormlyModule.forRoot(),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+        })
+      ],
+      providers: [
+        SPARKLER_AUTH_DEFAULTS,
+        { provide: AuthenticationService, useValue: authenticationServiceStub },
+        { provide: DialogService, useValue: dialogServiceStub },
+        { provide: LoadingService, useValue: loadingServiceStub }
+      ]})
       .compileComponents();
   }));
 
@@ -65,22 +61,16 @@ describe("LoginComponent", () => {
     component = fixture.componentInstance;
     element   = fixture.debugElement;
 
-    dialog         = element.injector.get(DialogService);
-    loading        = element.injector.get(LoadingService);
-
-    spyOn(component, "login").and.callThrough();
-
-    spyOn(dialog, "error").and.callThrough();
-
-    spyOn(loading, "hide").and.callFake(() => { });
-    spyOn(loading, "show").and.callFake(() => { });
+    authenticationServiceSpy = element.injector.get(AuthenticationService) as any;
+    dialogServiceSpy         = element.injector.get(DialogService) as any;
+    loadingServiceSpy        = element.injector.get(LoadingService) as any;
 
     const formlyConfig: FormlyConfig  = TestBed.get(FormlyConfig);
     const translate: TranslateService = TestBed.get(TranslateService);
 
     ValidationRulesFactory(formlyConfig, translate).apply(this);
 
-    fixture.detectChanges();
+    spyOn(component, "login").and.callThrough();
   });
 
   it("should be created", () => {
@@ -93,22 +83,25 @@ describe("LoginComponent", () => {
       password: "supaduppasecurepassword"
     };
 
-    const authentication = element.injector.get(AuthenticationService);
-    spyOn(authentication, "login").and.callFake(() => of(new HttpResponse({ status: 200 })));
-    spyOn(authentication, "redirect").and.callFake(() => {
-      return { then: (callback: any) => callback.apply(this) };
-    });
+    authenticationServiceSpy.login
+      .and.callFake(() => of(new HttpResponse({ status: 200 })));
+    authenticationServiceSpy.redirect.and.returnValue(FakePromise);
 
     component.model = params;
+
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(component.login).toHaveBeenCalled();
-    expect(authentication.login).toHaveBeenCalledWith(params);
-    expect(authentication.redirect).toHaveBeenCalled();
-    expect(loading.show).toHaveBeenCalled();
-    expect(loading.hide).toHaveBeenCalled();
+
+    expect(authenticationServiceSpy.login).toHaveBeenCalledWith(params);
+    expect(authenticationServiceSpy.redirect).toHaveBeenCalled();
+
+    expect(loadingServiceSpy.hide).toHaveBeenCalled();
+    expect(loadingServiceSpy.show).toHaveBeenCalled();
+
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
   });
 
   it("should fail to login unauthorized user", async () => {
@@ -118,27 +111,28 @@ describe("LoginComponent", () => {
       password: "mah-wrong-password"
     };
 
-    const authentication = element.injector.get(AuthenticationService);
-    spyOn(authentication, "login")
+    authenticationServiceSpy.login
       .and.callFake(() => throwError(new HttpErrorResponse({
         error: { message: errorMessage },
         status: 401
       })));
-    spyOn(authentication, "redirect").and.callFake(() => Promise.resolve(true));
+    authenticationServiceSpy.redirect.and.returnValue(FakePromise);
 
     component.model = params;
+
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
-
-    await (document.querySelector("button.swal2-confirm") as HTMLElement).click();
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(component.login).toHaveBeenCalled();
-    expect(authentication.login).toHaveBeenCalledWith(params);
-    expect(authentication.redirect).not.toHaveBeenCalled();
-    expect(loading.show).toHaveBeenCalled();
-    expect(loading.hide).toHaveBeenCalled();
-    expect(dialog.error).toHaveBeenCalledWith(errorMessage);
+
+    expect(authenticationServiceSpy.login).toHaveBeenCalledWith(params);
+    expect(authenticationServiceSpy.redirect).not.toHaveBeenCalled();
+
+    expect(loadingServiceSpy.show).toHaveBeenCalled();
+    expect(loadingServiceSpy.hide).toHaveBeenCalled();
+
+    expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
   });
 
   it("should fail to login user", async () => {
@@ -148,26 +142,27 @@ describe("LoginComponent", () => {
       password: "not-that-password"
     };
 
-    const authentication = element.injector.get(AuthenticationService);
-    spyOn(authentication, "login")
+    authenticationServiceSpy.login
       .and.callFake(() => throwError(new HttpErrorResponse({
         error: { message: errorMessage },
         status: 500
       })));
-    spyOn(authentication, "redirect").and.callFake(() => Promise.resolve(true));
+    authenticationServiceSpy.redirect.and.returnValue(FakePromise);
 
     component.model = params;
+
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
-
-    await (document.querySelector("button.swal2-confirm") as HTMLElement).click();
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(component.login).toHaveBeenCalled();
-    expect(authentication.login).toHaveBeenCalledWith(params);
-    expect(authentication.redirect).not.toHaveBeenCalled();
-    expect(loading.show).toHaveBeenCalled();
-    expect(loading.hide).toHaveBeenCalled();
-    expect(dialog.error).toHaveBeenCalledWith(errorMessage);
+
+    expect(authenticationServiceSpy.login).toHaveBeenCalledWith(params);
+    expect(authenticationServiceSpy.redirect).not.toHaveBeenCalled();
+
+    expect(loadingServiceSpy.show).toHaveBeenCalled();
+    expect(loadingServiceSpy.hide).toHaveBeenCalled();
+
+    expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
   });
 });

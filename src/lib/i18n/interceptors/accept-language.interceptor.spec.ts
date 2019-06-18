@@ -1,6 +1,6 @@
 import { HTTP_INTERCEPTORS, HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule , HttpTestingController } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { async, TestBed } from "@angular/core/testing";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 
 import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
@@ -18,7 +18,7 @@ describe("AcceptLanguageInterceptor", () => {
   let httpTestingController: HttpTestingController;
   let translateService: TranslateService;
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -35,10 +35,12 @@ describe("AcceptLanguageInterceptor", () => {
         }
       ]
     });
+  }));
 
-    httpClient = TestBed.get(HttpClient);
+  beforeEach(() => {
+    httpClient            = TestBed.get(HttpClient);
     httpTestingController = TestBed.get(HttpTestingController);
-    translateService = TestBed.get(TranslateService);
+    translateService      = TestBed.get(TranslateService);
 
     translateService.setDefaultLang(appDefaultLanguage);
     translateService.use(appDefaultLanguage);

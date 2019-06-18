@@ -2,6 +2,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { defineLocale, ptBrLocale } from "ngx-bootstrap/chronos";
 import { BsLocaleService } from "ngx-bootstrap/datepicker";
 
+// Todo: defineLocale must define locales dynamically.
 export function SetComponentsLanguageFactory(
   bsLocale: BsLocaleService,
   translate: TranslateService

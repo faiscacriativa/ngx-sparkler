@@ -1,21 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyConfig, FormlyModule } from "@ngx-formly/core";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
 import { of, throwError } from "rxjs";
 
-import { FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
+import { FakeEvent, FakePromise, FakeTranslateLoader } from "projects/ngx-sparkler/src/testing/fakes";
 
-import { API_URL } from "../../../core";
 import { FormUtilitiesService, ValidationRulesFactory } from "../../../forms";
-import { DialogService, LoadingService, SPARKLER_UI_DEFAULTS } from "../../../ui";
+import { DialogService, LoadingService } from "../../../ui";
 import { PASSWORD_RESET_REQUEST_ROUTE, SPARKLER_AUTH_DEFAULTS, USER_DASHBOARD_ROUTE } from "../../injection-tokens";
 import { PasswordService } from "../../services";
 
@@ -54,9 +51,7 @@ describe("PasswordResetComponent", () => {
     TestBed.configureTestingModule({
       declarations: [PasswordResetComponent],
       imports: [
-        HttpClientTestingModule,
         ReactiveFormsModule,
-        RouterTestingModule,
         FormlyBootstrapModule,
         FormlyModule.forRoot(),
         TranslateModule.forRoot({
@@ -65,8 +60,6 @@ describe("PasswordResetComponent", () => {
       ],
       providers: [
         SPARKLER_AUTH_DEFAULTS,
-        SPARKLER_UI_DEFAULTS,
-        { provide: API_URL, useValue: "https://localhost:8000" },
         { provide: ActivatedRoute, useValue: activatedRouteStub },
         { provide: DialogService, useValue: dialogServiceStub },
         { provide: FormUtilitiesService, useValue: formUtilitiesServiceStub },
@@ -88,8 +81,8 @@ describe("PasswordResetComponent", () => {
     activatedRouteSpy = element.injector.get(ActivatedRoute) as any;
 
     dialogServiceSpy = element.injector.get(DialogService) as any;
-    dialogServiceSpy.error.and.callFake(() => ({ then: (callback: any) => callback.apply() }));
-    dialogServiceSpy.success.and.callFake(() => ({ then: (callback: any) => callback.apply() }));
+    dialogServiceSpy.error.and.returnValue(FakePromise);
+    dialogServiceSpy.success.and.returnValue(FakePromise);
 
     formUtilitiesServiceSpy = element.injector.get(FormUtilitiesService) as any;
     loadingServiceSpy       = element.injector.get(LoadingService) as any;
@@ -117,6 +110,11 @@ describe("PasswordResetComponent", () => {
     expect(component.model).toEqual(jasmine.objectContaining({ token }));
 
     expect(formUtilitiesServiceSpy.translateLabels).toHaveBeenCalled();
+
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
   });
 
   it("should show the request password reset form", () => {
@@ -127,6 +125,11 @@ describe("PasswordResetComponent", () => {
     expect(component.hasToken).toBe(false);
 
     expect(formUtilitiesServiceSpy.translateLabels).toHaveBeenCalled();
+
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
   });
 
   it("should send the request link", () => {
@@ -140,13 +143,14 @@ describe("PasswordResetComponent", () => {
 
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(loadingServiceSpy.hide).toHaveBeenCalled();
     expect(loadingServiceSpy.show).toHaveBeenCalled();
 
     expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
 
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
     expect(dialogServiceSpy.success).toHaveBeenCalledWith(successMessage);
 
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(userDashboardRoute);
@@ -166,14 +170,17 @@ describe("PasswordResetComponent", () => {
 
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
     expect(loadingServiceSpy.hide).toHaveBeenCalled();
+    expect(loadingServiceSpy.show).toHaveBeenCalled();
 
     expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
 
     expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
+    expect(dialogServiceSpy.success).not.toHaveBeenCalledWith(errorMessage);
+
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
   });
 
   it("should fail to send the request link because backend thinks that the input is invalid", () => {
@@ -192,7 +199,7 @@ describe("PasswordResetComponent", () => {
 
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(loadingServiceSpy.show).toHaveBeenCalled();
     expect(loadingServiceSpy.hide).toHaveBeenCalled();
@@ -200,8 +207,11 @@ describe("PasswordResetComponent", () => {
     expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
 
     expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
 
     expect(formUtilitiesServiceSpy.showValidationErrors).toHaveBeenCalled();
+
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
   });
 
   it("should reset the password", () => {
@@ -226,19 +236,20 @@ describe("PasswordResetComponent", () => {
 
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(component.hasToken).toBe(true);
+
+    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
+      email: formValue.email,
+      token: formValue.token,
+      ...formValue.password
+    });
 
     expect(loadingServiceSpy.show).toHaveBeenCalled();
     expect(loadingServiceSpy.hide).toHaveBeenCalled();
 
-    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
-        email: formValue.email,
-        token: formValue.token,
-        ...formValue.password
-      });
-
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
     expect(dialogServiceSpy.success).toHaveBeenCalledWith(successMessage);
 
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(userDashboardRoute);
@@ -272,7 +283,7 @@ describe("PasswordResetComponent", () => {
 
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
     expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
         email: formValue.email,
@@ -284,6 +295,7 @@ describe("PasswordResetComponent", () => {
     expect(loadingServiceSpy.hide).toHaveBeenCalled();
 
     expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
+    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
 
     expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(passwordResetRequestRoute);
   });
@@ -316,17 +328,22 @@ describe("PasswordResetComponent", () => {
 
     fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", { preventDefault: () => { } });
+    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
+
+    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
+      email: formValue.email,
+      token: formValue.token,
+      ...formValue.password
+    });
 
     expect(loadingServiceSpy.show).toHaveBeenCalled();
     expect(loadingServiceSpy.hide).toHaveBeenCalled();
 
-    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
-        email: formValue.email,
-        token: formValue.token,
-        ...formValue.password
-      });
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
 
     expect(formUtilitiesServiceSpy.showValidationErrors).toHaveBeenCalled();
+
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
   });
 });

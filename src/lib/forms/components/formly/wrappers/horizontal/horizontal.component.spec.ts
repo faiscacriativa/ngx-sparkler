@@ -1,5 +1,5 @@
 import { ComponentFactoryResolver, DebugElement, Injector } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, async } from "@angular/core/testing";
 import { FormControl } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -12,15 +12,17 @@ describe("FormlyHorizontalComponent", () => {
   let component: FormlyHorizontalComponent;
   let element: DebugElement;
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FormlyHorizontalComponent],
       imports: [
         FormlyBootstrapModule,
         FormlyModule.forRoot()
-      ]
-    });
+      ]})
+      .compileComponents();
+  }));
 
+  beforeEach(() => {
     fixture   = TestBed.createComponent(FormlyHorizontalComponent);
     component = fixture.componentInstance;
     element   = fixture.debugElement;

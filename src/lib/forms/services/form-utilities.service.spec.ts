@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -10,6 +10,19 @@ import cloneDeep from "lodash/cloneDeep";
 import { FakeTranslateLoader, translationsStub } from "projects/ngx-sparkler/src/testing/fakes";
 
 import { FormUtilitiesService } from "./form-utilities.service";
+
+@Component({
+  template: `<form [formGroup]="form">
+    <formly-form [model]="model" [fields]="fields" [options]="options" [form]="form"></formly-form>
+    <button type="submit" class="btn btn-primary submit-button">Submit</button>
+  </form>`
+})
+class TestComponent {
+  public form = new FormGroup({});
+  public fields: FormlyFieldConfig[];
+  public model: any = {};
+  public options: FormlyFormOptions = {};
+}
 
 describe("FormUtilitiesService", () => {
   const fieldsConfig: FormlyFieldConfigCache[] = [
@@ -41,30 +54,9 @@ describe("FormUtilitiesService", () => {
   let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
   let service: FormUtilitiesService;
-  let testConfig: FormlyFieldConfig[];
   let translate: TranslateService;
 
-  @Component({
-    template: `<form [formGroup]="form">
-      <formly-form [model]="model" [fields]="fields" [options]="options" [form]="form"></formly-form>
-      <button type="submit" class="btn btn-primary submit-button">Submit</button>
-    </form>`
-  })
-  class TestComponent {
-    public form = new FormGroup({});
-    public model: any = {};
-    public options: FormlyFormOptions = {};
-
-    public fields: FormlyFieldConfig[];
-
-    constructor() {
-      this.fields = testConfig;
-    }
-  }
-
-  beforeEach(() => {
-    testConfig = cloneDeep(fieldsConfig);
-
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TestComponent],
       imports: [
@@ -74,22 +66,22 @@ describe("FormUtilitiesService", () => {
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
         })
-      ],
-      providers: [
+      ]})
+      .compileComponents();
+  }));
 
-      ]
-    }).compileComponents();
-
+  beforeEach(() => {
     fixture   = TestBed.createComponent(TestComponent);
     component = fixture.debugElement.componentInstance;
-
-    fixture.detectChanges();
-
     service = TestBed.get(FormUtilitiesService);
     translate = TestBed.get(TranslateService);
 
     translate.setDefaultLang("en");
     translate.use("en");
+
+    component.fields = cloneDeep(fieldsConfig);
+
+    fixture.detectChanges();
   });
 
   it("should be created", () => {
@@ -97,13 +89,13 @@ describe("FormUtilitiesService", () => {
   });
 
   it("should translate field label", () => {
-    service.translateLabels(testConfig, "testForm");
+    service.translateLabels(component.fields, "testForm");
 
-    expect(testConfig).not.toBe(fieldsConfig);
-    expect(testConfig[0].templateOptions.label).toBe(translationsStub.testForm.fullName);
-    expect(testConfig[0].fieldGroup[0].templateOptions.label).toBe(translationsStub.testForm.firstName);
-    expect(testConfig[0].fieldGroup[1].templateOptions.label).toBe(translationsStub.testForm.lastName);
-    expect(testConfig[1].templateOptions.label).toBe(translationsStub.testForm.email);
+    expect(component.fields).not.toBe(fieldsConfig);
+    expect(component.fields[0].templateOptions.label).toBe(translationsStub.testForm.fullName);
+    expect(component.fields[0].fieldGroup[0].templateOptions.label).toBe(translationsStub.testForm.firstName);
+    expect(component.fields[0].fieldGroup[1].templateOptions.label).toBe(translationsStub.testForm.lastName);
+    expect(component.fields[1].templateOptions.label).toBe(translationsStub.testForm.email);
   });
 
   it("should show validation errors", () => {
@@ -113,7 +105,7 @@ describe("FormUtilitiesService", () => {
       { field: "email", message: ["This field is required.", "Please, insert a valid email."]}
     ];
 
-    service.showValidationErrors(testConfig, errors);
+    service.showValidationErrors(component.fields, errors);
 
     expect(component.fields[0].fieldGroup[1].formControl.errors).not.toBeTruthy();
     expect(component.fields[0].fieldGroup[0].formControl.errors.backend).toBeTruthy();

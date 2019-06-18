@@ -66,6 +66,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -88,6 +89,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -117,7 +119,9 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(Swal.fire).not.toHaveBeenCalledWith(wrongOptions);
+
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -138,6 +142,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -160,6 +165,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -189,7 +195,9 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(Swal.fire).not.toHaveBeenCalledWith(wrongOptions);
+
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -210,6 +218,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -232,6 +241,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -261,7 +271,9 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(Swal.fire).not.toHaveBeenCalledWith(wrongOptions);
+
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -282,6 +294,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -304,6 +317,7 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(result).toBe(resultStub);
+
         done();
       });
   });
@@ -333,10 +347,12 @@ describe("DialogService", () => {
       .then((result: SweetAlertResult) => {
         expect(Swal.fire).toHaveBeenCalledWith(options);
         expect(Swal.fire).not.toHaveBeenCalledWith(wrongOptions);
+
         expect(result).toBe(resultStub);
+
         done();
       });
   });
 
-  // Todo: Expandir os testes para validar os resultados do SweetAlert.
+  // Todo: Expand the tests to validate the SweetAlert results.
 });

@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed, async } from "@angular/core/testing";
 import { FormlyConfig } from "@ngx-formly/core";
 
 import { FormlyConfigFactory } from "./formly-config.factory";
@@ -6,22 +6,17 @@ import { FormlyConfigFactory } from "./formly-config.factory";
 describe("FormlyConfigFactory", () => {
   let formlyConfig: FormlyConfig;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: []
-    });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({ });
 
     formlyConfig = TestBed.get(FormlyConfig);
-  });
+  }));
 
-  it("should configure Formly", (done: DoneFn) => {
+  it("should configure Formly", async () => {
     const spy = spyOn(formlyConfig, "addConfig");
 
-    FormlyConfigFactory(formlyConfig)
-      .apply(this)
-      .then(() => {
-        expect(spy).toHaveBeenCalled();
-        done();
-      });
+    await FormlyConfigFactory(formlyConfig).apply(this);
+
+    expect(spy).toHaveBeenCalled();
   });
 });

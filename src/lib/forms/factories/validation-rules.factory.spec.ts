@@ -1,5 +1,5 @@
 import { Component, DebugElement } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
+import { async, TestBed } from "@angular/core/testing";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -37,7 +37,7 @@ describe("ValidationRulesFactory", () => {
   let formlyConfig: FormlyConfig;
   let translate: TranslateService;
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TestFormComponent],
       imports: [
@@ -56,24 +56,21 @@ describe("ValidationRulesFactory", () => {
     translate    = TestBed.get(TranslateService);
 
     ValidationRulesFactory(formlyConfig, translate).apply(this);
-  });
+  }));
 
-  it("should add validation rules to Formly", (done: DoneFn) => {
-    ValidationRulesFactory(formlyConfig, translate)
-      .apply(this)
-      .then(() => {
-        expect(formlyConfig.messages.email).toBeTruthy();
-        expect(formlyConfig.messages.required).toBeTruthy();
-        expect(formlyConfig.messages.maxlength).toBeTruthy();
-        expect(formlyConfig.messages.minlength).toBeTruthy();
-        expect(formlyConfig.messages.pattern).toBeTruthy();
-        expect(formlyConfig.messages.telephone).toBeTruthy();
-        expect(formlyConfig.validators.date).toBeTruthy();
-        expect(formlyConfig.validators.email).toBeTruthy();
-        expect(formlyConfig.validators.telephone).toBeTruthy();
+  it("should add validation rules to Formly", async () => {
+    await ValidationRulesFactory(formlyConfig, translate).apply(this);
 
-        done();
-      });
+    expect(formlyConfig.messages.email).toBeTruthy();
+    expect(formlyConfig.messages.required).toBeTruthy();
+    expect(formlyConfig.messages.maxlength).toBeTruthy();
+    expect(formlyConfig.messages.minlength).toBeTruthy();
+    expect(formlyConfig.messages.pattern).toBeTruthy();
+    expect(formlyConfig.messages.telephone).toBeTruthy();
+
+    expect(formlyConfig.validators.date).toBeTruthy();
+    expect(formlyConfig.validators.email).toBeTruthy();
+    expect(formlyConfig.validators.telephone).toBeTruthy();
   });
 
   it("should validate date", () => {
