@@ -25,9 +25,9 @@ export class BackButtonComponent implements OnInit {
 
     if (
       history.length > 0 &&
-      this.urlService.previousUrl
+      this.urlService.previousURL
     ) {
-      this.href = this.urlService.previousUrl;
+      this.href = this.urlService.previousURL;
     }
   }
 

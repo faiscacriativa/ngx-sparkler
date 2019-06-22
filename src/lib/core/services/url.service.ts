@@ -11,7 +11,7 @@ export class UrlService {
     return this._currentURL;
   }
 
-  public get previousUrl(): any {
+  public get previousURL(): any {
     return this._previousURL;
   }
 

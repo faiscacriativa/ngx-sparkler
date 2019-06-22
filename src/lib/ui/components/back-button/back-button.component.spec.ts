@@ -21,7 +21,7 @@ describe("BackButtonComponent", () => {
 
   beforeEach(async(() => {
     locationStub = jasmine.createSpyObj("Location", ["back", "replaceState"]);
-    urlServiceStub = { previousUrl: undefined };
+    urlServiceStub = { previousURL: undefined };
 
     TestBed.configureTestingModule({
       declarations: [ BackButtonComponent ],
@@ -50,7 +50,7 @@ describe("BackButtonComponent", () => {
   it("should have the href value equals to defined in path property", () => {
     const historyLengthSpy = spyOnProperty(history, "length", "get").and.returnValue(0);
 
-    (urlServiceSpy as any).previousUrl = undefined;
+    (urlServiceSpy as any).previousURL = undefined;
 
     fixture.detectChanges();
 
@@ -63,7 +63,7 @@ describe("BackButtonComponent", () => {
   it("should have the path value equals previous URL", () => {
     const historyLengthSpy = spyOnProperty(history, "length", "get").and.returnValue(1);
 
-    (urlServiceSpy as any).previousUrl = previousUrlValue;
+    (urlServiceSpy as any).previousURL = previousUrlValue;
 
     fixture.detectChanges();
 
