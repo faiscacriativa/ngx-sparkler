@@ -30,11 +30,7 @@ export class NonAuthenticatedGuard implements CanActivate, CanActivateChild, Can
       .pipe(map((authenticated: boolean) => {
         const redirectTo = this.getRedirect(authenticated);
 
-        if (redirectTo) {
-          return redirectTo;
-        }
-
-        return !authenticated;
+        return redirectTo ? redirectTo : !authenticated;
       }));
   }
 
@@ -48,7 +44,7 @@ export class NonAuthenticatedGuard implements CanActivate, CanActivateChild, Can
         const redirectTo = this.getRedirect(authenticated);
 
         if (redirectTo) {
-          return this.router.navigateByUrl(redirectTo);
+          this.router.navigateByUrl(redirectTo);
         }
 
         return of(!authenticated);
