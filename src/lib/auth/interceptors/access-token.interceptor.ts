@@ -8,13 +8,15 @@ import { Inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
 import { API_URL } from "../../core/services/index";
-
 import { AuthenticationService } from "../services/index";
 
 @Injectable()
 export class AccessTokenInterceptor implements HttpInterceptor {
 
-  constructor(@Inject(API_URL) private apiUrl: string) {
+  constructor(
+    @Inject(API_URL) private apiUrl: string,
+    private authentication: AuthenticationService
+  ) {
     this.apiUrl = this.apiUrl.replace(/\/$/, "");
   }
 
@@ -23,7 +25,7 @@ export class AccessTokenInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    const accessToken = AuthenticationService.getAccessToken();
+    const accessToken = this.authentication.accessToken;
 
     const authorizedRequest = request.clone({
       headers: request.headers.set("Authorization", `Bearer ${accessToken}`)
