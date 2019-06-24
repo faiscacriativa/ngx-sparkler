@@ -1,4 +1,4 @@
-import { Inject, Injectable, isDevMode } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import {
   CanActivate,
   CanActivateChild,
@@ -31,11 +31,7 @@ export class AuthenticatedGuard implements CanActivate, CanActivateChild, CanLoa
       .pipe(map((authenticated: boolean) => {
         const redirectTo = this.getRedirect(authenticated);
 
-        if (redirectTo) {
-          return redirectTo;
-        }
-
-        return authenticated;
+        return redirectTo ? redirectTo : authenticated;
       }));
   }
 
@@ -43,13 +39,13 @@ export class AuthenticatedGuard implements CanActivate, CanActivateChild, CanLoa
     return this.canActivate();
   }
 
-  canLoad(): Observable<boolean> | Promise<boolean> | boolean {
+  canLoad(): Observable<boolean> {
     return this.isAuthenticated()
       .pipe(switchMap((authenticated: boolean) => {
         const redirectTo = this.getRedirect(authenticated);
 
         if (redirectTo) {
-          return this.router.navigateByUrl(redirectTo);
+          this.router.navigateByUrl(redirectTo);
         }
 
         return of(authenticated);
@@ -63,11 +59,6 @@ export class AuthenticatedGuard implements CanActivate, CanActivateChild, CanLoa
       !authenticated &&
       (!pathname.includes(this.loginRoute) && !pathname.includes(this.signUpRoute))
     ) {
-      // TODO: Remove this statements after debug.
-      if (isDevMode()) {
-        console.log("Setting Redirect To: " + location.pathname);
-      }
-
       this.authentication.redirectTo = location.href;
 
       return this.router.parseUrl(this.loginRoute);
