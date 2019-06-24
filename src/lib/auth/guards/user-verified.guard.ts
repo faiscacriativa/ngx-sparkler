@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import {
   CanActivate,
   CanActivateChild,
@@ -7,6 +7,7 @@ import {
   UrlTree
 } from "@angular/router";
 
+import { EMAIL_VERIFICATION_ROUTE } from "../injection-tokens";
 import { AuthenticationService } from "../services/index";
 
 @Injectable({
@@ -14,13 +15,17 @@ import { AuthenticationService } from "../services/index";
 })
 export class UserVerifiedGuard implements CanActivate, CanActivateChild, CanLoad {
 
-  constructor(private auth: AuthenticationService, protected router: Router) {
+  constructor(
+    @Inject(EMAIL_VERIFICATION_ROUTE) protected emailVerifyRoute: string,
+    protected auth: AuthenticationService,
+    protected router: Router
+  ) {
 
   }
 
   canActivate(): boolean | UrlTree {
     if (!this.userHasEmailVerified()) {
-      return this.router.parseUrl("/email/verify");
+      return this.router.parseUrl(this.emailVerifyRoute);
     }
 
     return true;
