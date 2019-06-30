@@ -3,7 +3,6 @@ import { Observable } from "rxjs";
 
 import { ApiResponse } from "../../core/interfaces/index";
 import { HttpService } from "../../core/services/index";
-
 import {
   PASSWORD_CHANGE_ENDPOINT,
   PASSWORD_RESET_ENDPOINT,
@@ -23,9 +22,9 @@ export class PasswordService {
     @Inject(PASSWORD_RESET_TOKEN_VALIDATION_ENDPOINT) private tokenValidationEndpoint,
     private http: HttpService
   ) {
-    this.changeEndpoint = changeEndpoint.replace(/^\//, "");
-    this.resetEndpoint = resetEndpoint.replace(/^\//, "");
-    this.requestEndpoint = requestEndpoint.replace(/^\//, "");
+    this.changeEndpoint          = changeEndpoint.replace(/^\//, "");
+    this.resetEndpoint           = resetEndpoint.replace(/^\//, "");
+    this.requestEndpoint         = requestEndpoint.replace(/^\//, "");
     this.tokenValidationEndpoint = this.tokenValidationEndpoint.replace(/^\//, "");
   }
 
