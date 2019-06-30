@@ -1,11 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 
 import { HttpService } from "../../core/services/http.service";
-
-import {
-  EMAIL_VERIFICATION_ENDPOINT,
-  EMAIL_VERIFICATION_RESEND_ENDPOINT
-} from "../injection-tokens";
+import { EMAIL_VERIFICATION_ENDPOINT, EMAIL_VERIFICATION_RESEND_ENDPOINT } from "../injection-tokens";
 
 @Injectable({
   providedIn: "root"
@@ -17,7 +13,8 @@ export class EmailVerificationService {
     @Inject(EMAIL_VERIFICATION_RESEND_ENDPOINT) private emailVerificationResendEndpoint: string,
     private http: HttpService
   ) {
-    this.emailVerificationEndpoint = emailVerificationEndpoint.replace(/^\//, "");
+    this.emailVerificationEndpoint       = emailVerificationEndpoint.replace(/^\//, "");
+    this.emailVerificationResendEndpoint = emailVerificationResendEndpoint.replace(/^\//, "");
   }
 
   public verify(userId: number, verifyData: any) {
