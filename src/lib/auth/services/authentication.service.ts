@@ -1,4 +1,4 @@
-import { Inject, Injectable, isDevMode } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, Observable, of } from "rxjs";
@@ -72,21 +72,7 @@ export class AuthenticationService {
   public fetchUser(): Observable<User> {
     return this.http.get(`/${this.userProfileEndpoint}`)
       .pipe(
-        catchError((error) => {
-          this.user$.next(GuestUser);
-          this.authenticated$.next(false);
-
-          if (isDevMode()) {
-            console.log(error);
-          }
-
-          return of(null);
-        }),
         map((response: ApiResponse) => {
-          if (!response) {
-            return GuestUser;
-          }
-
           const user = response.data as User;
 
           this.user$.next(user);
@@ -94,6 +80,14 @@ export class AuthenticationService {
           this.verified$.next(!!user.email_verified_at);
 
           return user;
+        }),
+        catchError(() => {
+          this.user$.next(GuestUser);
+          this.authenticated$.next(false);
+
+          // Todo: Implement a error reporting for future debug.
+
+          return of(GuestUser);
         })
       );
   }
@@ -134,17 +128,8 @@ export class AuthenticationService {
   public redirect(): Promise<boolean> {
     let redirectTarget: string = this.userDashboardRoute;
 
-    // An redirectTo is being defined intermittently.
-    // A log is set here to investigate this case.
-    // TODO: Remove this statements after debug.
-    if (isDevMode) {
-      console.log("Will redirect to: " + this.redirectTo);
-    }
-
     if (this.redirectTo) {
-      const rediretUrl = new URL(this.redirectTo);
-
-      redirectTarget  = `${rediretUrl.pathname}${rediretUrl.search}`;
+      redirectTarget = this.redirectTo;
       this.redirectTo = undefined;
     }
 
