@@ -88,14 +88,22 @@ describe("FormUtilitiesService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should translate field label", () => {
-    service.translateLabels(component.fields, "testForm");
+  describe("translateLabels", () => {
+    it("should translate field label", () => {
+      service.translateLabels(component.fields, "testForm");
 
-    expect(component.fields).not.toBe(fieldsConfig);
-    expect(component.fields[0].templateOptions.label).toBe(translationsStub.testForm.fullName);
-    expect(component.fields[0].fieldGroup[0].templateOptions.label).toBe(translationsStub.testForm.firstName);
-    expect(component.fields[0].fieldGroup[1].templateOptions.label).toBe(translationsStub.testForm.lastName);
-    expect(component.fields[1].templateOptions.label).toBe(translationsStub.testForm.email);
+      expect(component.fields).not.toBe(fieldsConfig);
+      expect(component.fields[0].templateOptions.label).toBe(translationsStub.testForm.fullName);
+      expect(component.fields[0].fieldGroup[0].templateOptions.label).toBe(translationsStub.testForm.firstName);
+      expect(component.fields[0].fieldGroup[1].templateOptions.label).toBe(translationsStub.testForm.lastName);
+      expect(component.fields[1].templateOptions.label).toBe(translationsStub.testForm.email);
+
+      const fieldStub: FormlyFieldConfig[] = [{ key: "number" }];
+
+      service.translateLabels(fieldStub, "testForm");
+
+      expect(fieldStub[0].templateOptions).toBeUndefined();
+    });
   });
 
   it("should show validation errors", () => {
