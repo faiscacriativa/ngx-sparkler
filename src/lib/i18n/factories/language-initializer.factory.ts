@@ -13,6 +13,7 @@ function initializeLanguage(
 ) {
   const initializationPromises: Promise<any>[] = [];
 
+  /* istanbul ignore else  */
   if (listeners) {
     for (const initializationListener of listeners) {
       if (typeof initializationListener !== "function") {
@@ -21,6 +22,7 @@ function initializeLanguage(
 
       const initializationResult = initializationListener();
 
+      /* istanbul ignore else */
       if (!!initializationResult && typeof initializationResult.then === "function") {
         initializationPromises.push(initializationResult);
       }
@@ -28,6 +30,7 @@ function initializeLanguage(
   }
 
   if (initializationPromises.length === 0) {
+    /* istanbul ignore else */
     if (callback) {
       callback.apply(this, [languageSet]);
     }
@@ -37,6 +40,7 @@ function initializeLanguage(
 
   Promise.all(initializationPromises)
     .then(() => {
+      /* istanbul ignore else */
       if (callback) {
         callback.apply(this, [languageSet]);
       }
@@ -60,6 +64,7 @@ export function LanguageInitializerFactory(
     translate.use(languageToSet)
       .pipe(
         catchError(() => {
+          /* istanbul ignore next */
           if (isDevMode()) {
             console.error(`Problems with '${languageToSet}' language initialization.`);
           }
@@ -68,6 +73,7 @@ export function LanguageInitializerFactory(
 
           return translate.use(defaultLanguage)
             .pipe(catchError(() => {
+              /* istanbul ignore next */
               if (isDevMode()) {
                 console.error(`Problems with '${languageToSet}' language initialization.`);
                 console.error("No languages available to be set.");
@@ -92,6 +98,7 @@ export function LanguageInitializerFactory(
           initializationListeners,
           languageToSet,
           (languageSet) => {
+            /* istanbul ignore next  */
             if (isDevMode()) {
               console.log(`Language '${languageSet}' initialized successfully.`);
             }

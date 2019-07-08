@@ -21,22 +21,17 @@ describe("LanguageInitializerFactory", () => {
   let dialogServiceStub: Partial<DialogService>;
 
   let dialogServiceSpy: jasmine.SpyObj<DialogService>;
-  let initializedLanguageSpy: jasmine.Spy;
 
-  beforeEach(async(() => {
-    dialogServiceStub    = jasmine.createSpyObj("DialogService", ["error"]);
+  describe("without initialize token", () => {
+    runTests();
+  });
 
-    initializedLanguageSpy = jasmine.createSpy("initializeLanguage");
+  describe("with initialize token", () => {
+    const initializedLanguageSpy: jasmine.Spy = jasmine.createSpy("initializeLanguage");
 
-    TestBed.configureTestingModule({
-      imports: [
-        TranslateModule.forRoot({
-          loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
-        })
-      ],
-      providers: [
-        { provide: APP_LANGUAGES, useValue: `${defaultLanguage}|${languageToSet}` },
-        { provide: APP_DEFAULT_LANGUAGE, useValue: defaultLanguage },
+    runTests(
+      initializedLanguageSpy,
+      [
         {
           provide: LANGUAGE_INITIALIZED,
           useFactory: () => {
@@ -47,82 +42,110 @@ describe("LanguageInitializerFactory", () => {
           },
           multi: true
         },
-        { provide: DialogService, useValue: dialogServiceStub }
+        {
+          provide: LANGUAGE_INITIALIZED,
+          useValue: "Polyglot",
+          multi: true
+        }
       ]
+    );
+  });
+
+  function runTests(initializedLanguageSpy: jasmine.Spy = null, extraProviders = []) {
+    beforeEach(async(() => {
+      dialogServiceStub  = jasmine.createSpyObj("DialogService", ["error"]);
+
+      TestBed.configureTestingModule({
+        imports: [
+          TranslateModule.forRoot({
+            loader: { provide: TranslateLoader, useClass: FakeTranslateLoader }
+          })
+        ],
+        providers: [
+          { provide: APP_LANGUAGES, useValue: `${defaultLanguage}|${languageToSet}` },
+          { provide: APP_DEFAULT_LANGUAGE, useValue: defaultLanguage },
+          { provide: DialogService, useValue: dialogServiceStub },
+          extraProviders
+        ]
+      });
+    }));
+
+    beforeEach(() => {
+      dialogServiceSpy = TestBed.get(DialogService);
+
+      injector  = TestBed.get(Injector);
+      translate = TestBed.get(TranslateService);
     });
-  }));
 
-  beforeEach(() => {
-    dialogServiceSpy    = TestBed.get(DialogService);
+    it("should initialize the browser language", async () => {
+      const getBrowserLangSpy = spyOn(translate, "getBrowserLang")
+        .and.returnValue(languageToSet);
 
-    injector  = TestBed.get(Injector);
-    translate = TestBed.get(TranslateService);
-  });
+      await LanguageInitializerFactory(dialogServiceSpy, injector, translate).apply(this);
 
-  it("should initialize the browser language", async () => {
-    const getBrowserLangSpy = spyOn(translate, "getBrowserLang")
-      .and.returnValue(languageToSet);
+      expect(getBrowserLangSpy).toHaveBeenCalled();
 
-    await LanguageInitializerFactory(dialogServiceSpy, injector, translate).apply(this);
+      expect(translate.currentLang).toBe(languageToSet);
+      expect(translate.currentLang).not.toBe(defaultLanguage);
 
-    expect(getBrowserLangSpy).toHaveBeenCalled();
+      if (initializedLanguageSpy) {
+        expect(initializedLanguageSpy).toHaveBeenCalled();
+      }
+    });
 
-    expect(translate.currentLang).toBe(languageToSet);
-    expect(translate.currentLang).not.toBe(defaultLanguage);
+    it("should initialize the default language when the browser language is not supported", async () => {
+      const getBrowserLangSpy = spyOn(translate, "getBrowserLang").and.returnValue("de");
 
-    expect(initializedLanguageSpy).toHaveBeenCalled();
-  });
+      await LanguageInitializerFactory(dialogServiceSpy, injector, translate).apply(this);
 
-  it("should initialize the default language when the browser language is not supported", async () => {
-    const getBrowserLangSpy = spyOn(translate, "getBrowserLang").and.returnValue("de");
+      expect(getBrowserLangSpy).toHaveBeenCalled();
 
-    await LanguageInitializerFactory(dialogServiceSpy, injector, translate).apply(this);
+      expect(translate.currentLang).toBe(defaultLanguage);
+      expect(translate.currentLang).not.toBe(languageToSet);
 
-    expect(getBrowserLangSpy).toHaveBeenCalled();
+      if (initializedLanguageSpy) {
+        expect(initializedLanguageSpy).toHaveBeenCalled();
+      }
+    });
 
-    expect(translate.currentLang).toBe(defaultLanguage);
-    expect(translate.currentLang).not.toBe(languageToSet);
-
-    expect(initializedLanguageSpy).toHaveBeenCalled();
-  });
-
-  it("should initialize default language when the browser language fails to be initialized", async () => {
-    const getBrowserLangSpy = spyOn(translate, "getBrowserLang").and.returnValue(languageToSet);
-    const useSpy = spyOn(translate, "use").and
-      .returnValues(
-        throwError(new HttpErrorResponse({ status: 400, statusText: "Bad Request" })),
-        of(new HttpResponse({ status: 200, statusText: "Ok" }))
-      );
-
-    await LanguageInitializerFactory(dialogServiceSpy, injector, translate).apply(this);
-
-    expect(getBrowserLangSpy).toHaveBeenCalled();
-
-    expect(useSpy).toHaveBeenCalledTimes(2);
-  });
-
-  it("should fail to initialize any language and show a message to the user", (done: Function) => {
-    const useSpy = spyOn(translate, "use")
-      .and.returnValue(throwError(
-        new HttpErrorResponse({ status: 400, statusText: "Bad Request" })
-      ));
-
-    LanguageInitializerFactory(dialogServiceSpy, injector, translate)
-      .apply(this)
-      .then(() => done(new Error("Promise should be rejected.")))
-      .catch(() => {
-        expect(useSpy).toHaveBeenCalled();
-
-        expect(dialogServiceSpy.error).toHaveBeenCalledWith(
-          "Failed to load language.\nFalha ao carregar a linguagem.",
-          {
-            titleText: null,
-            allowOutsideClick: false,
-            showConfirmButton: false
-          }
+    it("should initialize default language when the browser language fails to be initialized", async () => {
+      const getBrowserLangSpy = spyOn(translate, "getBrowserLang").and.returnValue(languageToSet);
+      const useSpy = spyOn(translate, "use").and
+        .returnValues(
+          throwError(new HttpErrorResponse({ status: 400, statusText: "Bad Request" })),
+          of(new HttpResponse({ status: 200, statusText: "Ok" }))
         );
 
-        done();
-      });
-  });
+      await LanguageInitializerFactory(dialogServiceSpy, injector, translate).apply(this);
+
+      expect(getBrowserLangSpy).toHaveBeenCalled();
+
+      expect(useSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it("should fail to initialize any language and show a message to the user", (done: Function) => {
+      const useSpy = spyOn(translate, "use")
+        .and.returnValue(throwError(
+          new HttpErrorResponse({ status: 400, statusText: "Bad Request" })
+        ));
+
+      LanguageInitializerFactory(dialogServiceSpy, injector, translate)
+        .apply(this)
+        .then(() => done(new Error("Promise should be rejected.")))
+        .catch(() => {
+          expect(useSpy).toHaveBeenCalled();
+
+          expect(dialogServiceSpy.error).toHaveBeenCalledWith(
+            "Failed to load language.\nFalha ao carregar a linguagem.",
+            {
+              titleText: null,
+              allowOutsideClick: false,
+              showConfirmButton: false
+            }
+          );
+
+          done();
+        });
+    });
+  }
 });
