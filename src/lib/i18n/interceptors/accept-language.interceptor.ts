@@ -14,7 +14,7 @@ import { APP_DEFAULT_LANGUAGE } from "../injection-tokens";
 export class AcceptLanguageInterceptor implements HttpInterceptor {
 
   constructor(
-    @Inject(APP_DEFAULT_LANGUAGE) private defaultLanguage,
+    @Inject(APP_DEFAULT_LANGUAGE) private defaultLanguage: string,
     private translate: TranslateService
   ) {
 
