@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 
 import { PageNotFoundComponent } from "./page-not-found.component";
 
@@ -21,5 +22,11 @@ describe("PageNotFoundComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should render the component", () => {
+    const p = fixture.debugElement.query(By.css("p"));
+
+    expect((p.nativeElement as HTMLParagraphElement).innerText).toBe("page-not-found works!");
   });
 });
