@@ -6,7 +6,7 @@
  * found in LICENSE file or at http://faiscacriativa.com.br/sparkler/license.
  */
 
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Inject, Injectable, InjectionToken } from "@angular/core";
 import { Observable } from "rxjs";
 
@@ -40,15 +40,6 @@ export class HttpService {
   }
 
   /**
-   * Construct a DELETE request which interprets the body as JSON and returns it.
-   *
-   * @return an `Observable` of the body as type `T`.
-   */
-  delete<T>(endpoint: string,
-            queryData?: HttpParams | { [param: string]: string | string[] },
-            options?: HttpOptions): Observable<T>;
-
-  /**
    * Constructs an `Observable` which, when subscribed, will cause the configured
    * DELETE request to be executed on the server. See the individual overloads for
    * details of `delete()`'s return type based on the provided options.
@@ -64,6 +55,7 @@ export class HttpService {
       }
 
       for (const param in queryData) {
+        /* istanbul ignore next */
         if (!queryData.hasOwnProperty(param)) { continue; }
         options.params = (options.params as HttpParams).append(param, queryData[param]);
       }
@@ -71,26 +63,6 @@ export class HttpService {
 
     return this.http.delete(this.apiUrl + endpoint, options as any);
   }
-
-  /**
-   * Constructs a `GET` request that interprets the body as a JSON object and returns
-   * the response body in a given type.
-   *
-   * @param url     The endpoint URL.
-   * @param options The HTTP options to send with the request.
-   *
-   * @return An `Observable` of the `HTTPResponse`, with a response body in the requested type.
-   */
-  get<T>(endpoint: string,
-         queryData?: HttpParams | { [param: string]: string | string[] },
-         options?: {
-           headers?: HttpHeaders | { [header: string]: string | string[] },
-           observe?: "body",
-           params?: HttpParams | { [param: string]: string | string[] },
-           reportProgress?: boolean,
-           responseType?: "json",
-           withCredentials?: boolean,
-         }): Observable<T>;
 
   /**
    * Constructs an observable that, when subscribed, causes the configured
@@ -108,6 +80,7 @@ export class HttpService {
       }
 
       for (const param in queryData) {
+        /* istanbul ignore next */
         if (!queryData.hasOwnProperty(param)) { continue; }
         options.params = (options.params as HttpParams).append(param, queryData[param]);
       }
@@ -115,15 +88,6 @@ export class HttpService {
 
     return this.http.get(this.apiUrl + endpoint, options as any);
   }
-
-  /**
-   * Construct a HEAD request which interprets the body as JSON and returns it.
-   *
-   * @return an `Observable` of the body as type `T`.
-   */
-  head<T>(endpoint: string,
-          queryData?: HttpParams | { [param: string]: any | any[] },
-          options?: HttpOptions): Observable<T>;
 
   /**
    * Constructs an `Observable` which, when subscribed, will cause the configured
@@ -141,6 +105,7 @@ export class HttpService {
       }
 
       for (const param in queryData) {
+        /* istanbul ignore next */
         if (!queryData.hasOwnProperty(param)) { continue; }
         options.params = (options.params as HttpParams).append(param, queryData[param]);
       }
@@ -148,13 +113,6 @@ export class HttpService {
 
     return this.http.head(this.apiUrl + endpoint, options as any);
   }
-
-  /**
-   * Construct a PATCH request which interprets the body as JSON and returns it.
-   *
-   * @return an `Observable` of the body as type `T`.
-   */
-  patch<T>(endpoint: string, body: any | null, options?: HttpOptions): Observable<T>;
 
   /**
    * Constructs an `Observable` which, when subscribed, will cause the configured
@@ -166,13 +124,6 @@ export class HttpService {
   }
 
   /**
-   * Construct a POST request which interprets the body as JSON and returns it.
-   *
-   * @return an `Observable` of the body as type `T`.
-   */
-  post<T>(endpoint: string, body: any | null, options?: HttpOptions): Observable<T>;
-
-  /**
    * Constructs an `Observable` which, when subscribed, will cause the configured
    * POST request to be executed on the server. See the individual overloads for
    * details of `post()`'s return type based on the provided options.
@@ -180,13 +131,6 @@ export class HttpService {
   post(endpoint: string, body: any | null, options: HttpOptions = { }): Observable<any> {
     return this.http.post(this.apiUrl + endpoint, body, options as any);
   }
-
-  /**
-   * Construct a PUT request which interprets the body as JSON and returns it.
-   *
-   * @return an `Observable` of the body as type `T`.
-   */
-  put<T>(endpoint: string, body: any | null, options?: HttpOptions): Observable<T>;
 
   /**
    * Constructs an `Observable` which, when subscribed, will cause the configured
