@@ -2,6 +2,8 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 
+import { valueMatchValidator } from "../../../forms";
+
 export const RequestFormConfig = (): FormlyFieldConfig[] => [
   {
     key: "email",
@@ -44,7 +46,8 @@ export const ResetFormConfig = (translate: TranslateService): FormlyFieldConfig[
         expression: (control: FormGroup) => {
           const value = control.value;
 
-          return value.password_confirmation === value.password ||
+          return valueMatchValidator(value.password, value.password_confirmation) ||
+            /* istanbul ignore next */
             (!value.password_confirmation || !value.password);
         },
         message: translate.instant("validation.passwordMismatch"),

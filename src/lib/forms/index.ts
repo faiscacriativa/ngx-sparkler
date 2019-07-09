@@ -5,3 +5,4 @@ export * from "./formly.config";
 export * from "./forms.module";
 export * from "./interfaces/index";
 export * from "./services/index";
+export * from "./validators";

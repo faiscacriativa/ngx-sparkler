@@ -1,11 +1,9 @@
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 import { FormlyConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { PhoneNumberUtil } from "google-libphonenumber";
-import * as _moment from "moment";
 import { getLocale } from "ngx-bootstrap/chronos";
 
-const moment = _moment;
+import { dateValidator, emailValidator, telephoneValidator } from "../validators";
 
 function defineDateValidation(
   translate: TranslateService
@@ -14,35 +12,23 @@ function defineDateValidation(
     let currentLanguage = translate.currentLang;
 
     switch (currentLanguage) {
-    case "pt":
-      currentLanguage = "pt-BR";
-      break;
+      case "pt":
+        currentLanguage = "pt-BR";
+        break;
     }
 
     const format = getLocale(currentLanguage).longDateFormat("L");
 
-    return moment(control.value, format, true).isValid() ? null : { date: true };
+    return dateValidator(control.value, format) ? null : { date: true };
   };
 }
 
-function emailValidator(control: AbstractControl): ValidationErrors | null {
-  // tslint:disable-next-line:max-line-length
-  return /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/.test(control.value) ? null : { email: true };
+function emailValidation(control: AbstractControl): ValidationErrors | null {
+  return emailValidator(control.value) ? null : { email: true };
 }
 
 function telephoneValidation(control: AbstractControl): ValidationErrors | null {
-  if (!control.value) {
-    return null;
-  }
-
-  try {
-    const phoneNumberUtil = PhoneNumberUtil.getInstance();
-    const phoneNumber = phoneNumberUtil.parse(control.value);
-
-    return phoneNumberUtil.isValidNumber(phoneNumber) ? null : { telephone: true };
-  } catch (exception) {
-    return { telephone: true };
-  }
+  return telephoneValidator(control.value) ? null : { telephone: true };
 }
 
 export function ValidationRulesFactory(
@@ -73,7 +59,7 @@ export function ValidationRulesFactory(
       ],
       validators: [
         { name: "date", validation: defineDateValidation(translate) },
-        { name: "email", validation: emailValidator },
+        { name: "email", validation: emailValidation },
         { name: "telephone", validation: telephoneValidation }
       ]
     });

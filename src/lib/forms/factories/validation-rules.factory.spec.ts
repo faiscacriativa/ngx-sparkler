@@ -1,5 +1,5 @@
 import { Component, DebugElement } from "@angular/core";
-import { async, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
@@ -33,6 +33,10 @@ class TestFormComponent {
 }
 
 describe("ValidationRulesFactory", () => {
+  let fixture: ComponentFixture<TestFormComponent>;
+  let debugFormElement: DebugElement;
+  let inputDebugElements: DebugElement[];
+
   let bsLocale: BsLocaleService;
   let formlyConfig: FormlyConfig;
   let translate: TranslateService;
@@ -58,182 +62,198 @@ describe("ValidationRulesFactory", () => {
     ValidationRulesFactory(formlyConfig, translate).apply(this);
   }));
 
-  it("should add validation rules to Formly", async () => {
-    await ValidationRulesFactory(formlyConfig, translate).apply(this);
+  describe("should add validation messages", () => {
+    it("for email validation", () => {
+      expect(formlyConfig.messages.email).toBeTruthy();
+      expect(formlyConfig.messages.email).toBe("validation.email");
+    });
 
-    expect(formlyConfig.messages.email).toBeTruthy();
-    expect(formlyConfig.messages.required).toBeTruthy();
-    expect(formlyConfig.messages.maxlength).toBeTruthy();
-    expect(formlyConfig.messages.minlength).toBeTruthy();
-    expect(formlyConfig.messages.pattern).toBeTruthy();
-    expect(formlyConfig.messages.telephone).toBeTruthy();
+    it("for required field", () => {
+      expect(formlyConfig.messages.required).toBeTruthy();
+      expect(formlyConfig.messages.required).toBe("validation.required");
+    });
 
-    expect(formlyConfig.validators.date).toBeTruthy();
-    expect(formlyConfig.validators.email).toBeTruthy();
-    expect(formlyConfig.validators.telephone).toBeTruthy();
+    it("for max length validation", () => {
+      const maxLengthError = { actualLength: 10, requiredLength: 5 };
+
+      expect(formlyConfig.messages.maxlength).toBeTruthy();
+      expect((formlyConfig.messages.maxlength as any).apply(this, [maxLengthError]))
+        .toBe("validation.maxLength");
+    });
+
+    it("for min length validation", () => {
+      const minLengthError = { actualLength: 5, requiredLength: 10 };
+
+      expect(formlyConfig.messages.minlength).toBeTruthy();
+      expect((formlyConfig.messages.minlength as any).apply(this, [minLengthError]))
+        .toBe("validation.minLength");
+    });
+
+    it("for pattern validation", () => {
+      expect(formlyConfig.messages.pattern).toBeTruthy();
+      expect(formlyConfig.messages.pattern).toBe("validation.pattern");
+    });
+
+    it("for telephone validation", () => {
+      expect(formlyConfig.messages.telephone).toBeTruthy();
+      expect(formlyConfig.messages.telephone).toBe("validation.telephone");
+    });
   });
 
-  it("should validate date", () => {
-    testComponentInputs = {
-      fields: [
-        {
-          key: "date",
-          type: "input",
-          validators: { validation: ["date"] }
-        }
-      ],
-      form: new FormGroup({ }),
-      model: { }
-    };
+  describe("date validator", () => {
+    beforeEach(() => {
+      testComponentInputs = {
+        fields: [
+          {
+            key: "date",
+            type: "input",
+            validators: { validation: ["date"] }
+          }
+        ],
+        form: new FormGroup({ }),
+        model: { }
+      };
 
-    const fixture = TestBed.createComponent(TestFormComponent);
-    fixture.detectChanges();
+      fixture = TestBed.createComponent(TestFormComponent);
+      fixture.detectChanges();
 
-    const debugFormElement   = fixture.debugElement.query(By.css("form")) as DebugElement;
-    const inputDebugElements = debugFormElement.queryAll(By.css("input")) as DebugElement[];
+      debugFormElement   = fixture.debugElement.query(By.css("form")) as DebugElement;
+      inputDebugElements = debugFormElement.queryAll(By.css("input")) as DebugElement[];
+    });
 
-    // Formatos em inglês
+    it("should validate english date formats", () => {
+      translate.use("en");
 
-    translate.use("en");
+      inputDebugElements[0].nativeElement.value = "02/31/1989";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    inputDebugElements[0].nativeElement.value = "02/31/1989";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+      fixture.detectChanges();
 
-    fixture.detectChanges();
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+      inputDebugElements[0].nativeElement.value = "12/31/1989";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    inputDebugElements[0].nativeElement.value = "12/31/1989";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+      fixture.detectChanges();
 
-    fixture.detectChanges();
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+    });
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+    it("should validate brazilian date formats", () => {
+      translate.use("pt");
+      SetComponentsLanguageFactory(bsLocale, translate).apply(this);
 
-    // Formatos em português
+      inputDebugElements[0].nativeElement.value = "31/12/1989";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    translate.use("pt");
-    SetComponentsLanguageFactory(bsLocale, translate).apply(this);
+      fixture.detectChanges();
 
-    inputDebugElements[0].nativeElement.value = "31/12/1989";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
 
-    fixture.detectChanges();
+      inputDebugElements[0].nativeElement.value = "31/02/1989";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+      fixture.detectChanges();
 
-    inputDebugElements[0].nativeElement.value = "31/02/1989";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
-
-    fixture.detectChanges();
-
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+    });
   });
 
-  it("should validate email", () => {
-    testComponentInputs = {
-      fields: [
-        {
-          key: "email",
-          type: "input",
-          validators: { validation: ["email"] }
-        }
-      ],
-      form: new FormGroup({ }),
-      model: { }
-    };
+  describe("email validator", () => {
+    beforeEach(() => {
+      testComponentInputs = {
+        fields: [
+          {
+            key: "email",
+            type: "input",
+            validators: { validation: ["email"] }
+          }
+        ],
+        form: new FormGroup({ }),
+        model: { }
+      };
 
-    const fixture = TestBed.createComponent(TestFormComponent);
-    fixture.detectChanges();
+      fixture = TestBed.createComponent(TestFormComponent);
+      fixture.detectChanges();
 
-    const debugFormElement   = fixture.debugElement.query(By.css("form")) as DebugElement;
-    const inputDebugElements = debugFormElement.queryAll(By.css("input")) as DebugElement[];
+      debugFormElement   = fixture.debugElement.query(By.css("form")) as DebugElement;
+      inputDebugElements = debugFormElement.queryAll(By.css("input")) as DebugElement[];
+    });
 
-    inputDebugElements[0].nativeElement.value = "test.@email";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+    it("should validate email", () => {
+      inputDebugElements[0].nativeElement.value = "test.@email";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+    });
   });
 
-  it("should validate telephone", () => {
-    testComponentInputs = {
-      fields: [
-        {
-          key: "telephone",
-          type: "input",
-          validators: { validation: ["telephone"] }
-        }
-      ],
-      form: new FormGroup({ }),
-      model: { }
-    };
+  describe("telephone validator", () => {
+    beforeEach(() => {
+      testComponentInputs = {
+        fields: [
+          {
+            key: "telephone",
+            type: "input",
+            validators: { validation: ["telephone"] }
+          }
+        ],
+        form: new FormGroup({ }),
+        model: { }
+      };
 
-    const fixture = TestBed.createComponent(TestFormComponent);
-    fixture.detectChanges();
+      fixture = TestBed.createComponent(TestFormComponent);
+      fixture.detectChanges();
 
-    const debugFormElement   = fixture.debugElement.query(By.css("form")) as DebugElement;
-    const inputDebugElements = debugFormElement.queryAll(By.css("input")) as DebugElement[];
+      debugFormElement   = fixture.debugElement.query(By.css("form")) as DebugElement;
+      inputDebugElements = debugFormElement.queryAll(By.css("input")) as DebugElement[];
+    });
 
-    inputDebugElements[0].nativeElement.value = "+1 021 9 7474-5832";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+    it("should validate Brazil telephone format with USA country form", () => {
+      inputDebugElements[0].nativeElement.value = "+1 021 9 7474-5832";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+    });
 
-    inputDebugElements[0].nativeElement.value = "7474-5832";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+    it("should validate brazilian 8 digit telephone format", () => {
+      inputDebugElements[0].nativeElement.value = "7474-5832";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+    });
 
-    inputDebugElements[0].nativeElement.value = "+55 021 9 7474-5832";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+    it("should validate brazilian 9 digit format with land and country code", () => {
+      inputDebugElements[0].nativeElement.value = "+55 021 9 7474-5832";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+    });
 
-    inputDebugElements[0].nativeElement.value = "+1 541-754-3010";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+    it("should validate USA telephone format with USA country code", () => {
+      inputDebugElements[0].nativeElement.value = "+1 541-754-3010";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(true);
+    });
 
-    inputDebugElements[0].nativeElement.value = "+55 541-754-3010";
-    inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
+    it("should validate USA telephone with Brazil country code format", () => {
+      inputDebugElements[0].nativeElement.value = "+55 541-754-3010";
+      inputDebugElements[0].nativeElement.dispatchEvent(new Event("input"));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
-  });
-
-  it("should add validation messages", () => {
-    expect(formlyConfig.messages.email).toBeTruthy();
-    expect(formlyConfig.messages.email).toBe("validation.email");
-
-    expect(formlyConfig.messages.required).toBeTruthy();
-    expect(formlyConfig.messages.required).toBe("validation.required");
-
-    const maxLengthError = { actualLength: 10, requiredLength: 5 };
-    const minLengthError = { actualLength: 5, requiredLength: 10 };
-
-    expect(formlyConfig.messages.maxlength).toBeTruthy();
-    expect((formlyConfig.messages.maxlength as any).apply(this, [maxLengthError]))
-      .toBe("validation.maxLength");
-
-    expect(formlyConfig.messages.minlength).toBeTruthy();
-    expect((formlyConfig.messages.minlength as any).apply(this, [minLengthError]))
-      .toBe("validation.minLength");
-
-    expect(formlyConfig.messages.pattern).toBeTruthy();
-    expect(formlyConfig.messages.pattern).toBe("validation.pattern");
-
-    expect(formlyConfig.messages.telephone).toBeTruthy();
-    expect(formlyConfig.messages.telephone).toBe("validation.telephone");
+      expect(testComponentInputs.fields[0].formControl.valid).toBe(false);
+    });
   });
 });

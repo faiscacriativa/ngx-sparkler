@@ -62,6 +62,11 @@ export {
 } from "./lib/core/index";
 
 export {
+  dateValidator,
+  emailValidator,
+  telephoneValidator,
+  valueMatchValidator,
+
   DatepickerOptions,
   SelectOption,
 

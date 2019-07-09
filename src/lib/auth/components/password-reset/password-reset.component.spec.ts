@@ -99,6 +99,21 @@ describe("PasswordResetComponent", () => {
     expect(component).toBeTruthy();
   });
 
+  it("should show the request password reset form", () => {
+    (activatedRouteSpy as any).paramMap = of({ get: () => null });
+
+    fixture.detectChanges();
+
+    expect(component.hasToken).toBe(false);
+
+    expect(formUtilitiesServiceSpy.translateLabels).toHaveBeenCalled();
+
+    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+
+    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+  });
+
   it("should show the reset password form", () => {
     const token = "apv3jx5c2zhu6e5tn76cbb42";
 
@@ -117,233 +132,222 @@ describe("PasswordResetComponent", () => {
     expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  it("should show the request password reset form", () => {
-    (activatedRouteSpy as any).paramMap = of({ get: () => null });
+  describe("sendResetLink", () => {
+    it("should send the request link", () => {
+      const successMessage = "Reset link sent!";
 
-    fixture.detectChanges();
+      component.model = { email: "user@provider.io" };
 
-    expect(component.hasToken).toBe(false);
+      (activatedRouteSpy as any).paramMap = of({ get: () => null });
 
-    expect(formUtilitiesServiceSpy.translateLabels).toHaveBeenCalled();
+      passwordServiceSpy.request.and.callFake(() => of({ message: successMessage }));
 
-    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
-    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+      fixture.detectChanges();
 
-    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
-  });
+      element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
-  it("should send the request link", () => {
-    const successMessage = "Reset link sent!";
+      expect(loadingServiceSpy.hide).toHaveBeenCalled();
+      expect(loadingServiceSpy.show).toHaveBeenCalled();
 
-    component.model = { email: "user@provider.io" };
+      expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
 
-    (activatedRouteSpy as any).paramMap = of({ get: () => null });
+      expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+      expect(dialogServiceSpy.success).toHaveBeenCalledWith(successMessage);
 
-    passwordServiceSpy.request.and.callFake(() => of({ message: successMessage }));
-
-    fixture.detectChanges();
-
-    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
-
-    expect(loadingServiceSpy.hide).toHaveBeenCalled();
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
-
-    expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
-
-    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
-    expect(dialogServiceSpy.success).toHaveBeenCalledWith(successMessage);
-
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(userDashboardRoute);
-  });
-
-  it("should fail to send the request link", () => {
-    const errorMessage = "Something gone wrong.";
-
-    component.model = { email: "faulty@memory.com" };
-
-    (activatedRouteSpy as any).paramMap = of({ get: () => { } });
-    passwordServiceSpy.request
-      .and.callFake(() => throwError(new HttpErrorResponse({
-        status: 500,
-        error: { message: errorMessage }
-      })));
-
-    fixture.detectChanges();
-
-    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
-
-    expect(loadingServiceSpy.hide).toHaveBeenCalled();
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
-
-    expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
-
-    expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
-    expect(dialogServiceSpy.success).not.toHaveBeenCalledWith(errorMessage);
-
-    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
-  });
-
-  it("should fail to send the request link because backend thinks that the input is invalid", () => {
-    component.model = { email: "no@memory.com" };
-
-    (activatedRouteSpy as any).paramMap = of({ get: () => { } });
-    passwordServiceSpy.request
-      .and.callFake(() => throwError({
-        status: 422,
-        error: {
-          data: [
-            { field: "email", message: "Email not found." }
-          ]
-        }
-      }));
-
-    fixture.detectChanges();
-
-    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
-
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
-    expect(loadingServiceSpy.hide).toHaveBeenCalled();
-
-    expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
-
-    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
-    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
-
-    expect(formUtilitiesServiceSpy.showValidationErrors).toHaveBeenCalled();
-
-    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
-  });
-
-  it("should reset the password", () => {
-    const token          = "m52308asaphg0asdfh3";
-    const successMessage = "Password redefined!";
-    const formValue      = {
-      email: "user@provider.io",
-      password: {
-        password: "mynewpassword",
-        password_confirmation: "mynewpassword"
-      },
-      token
-    };
-
-    (activatedRouteSpy as any).paramMap = of({ get: () => token });
-    passwordServiceSpy.reset
-      .and.callFake(() => of({ message: successMessage }));
-
-    fixture.detectChanges();
-
-    component.form.patchValue(formValue);
-
-    fixture.detectChanges();
-
-    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
-
-    expect(component.hasToken).toBe(true);
-
-    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
-      email: formValue.email,
-      token: formValue.token,
-      ...formValue.password
+      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(userDashboardRoute);
     });
 
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
-    expect(loadingServiceSpy.hide).toHaveBeenCalled();
+    it("should fail to send the request link", () => {
+      const errorMessage = "Something gone wrong.";
 
-    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
-    expect(dialogServiceSpy.success).toHaveBeenCalledWith(successMessage);
+      component.model = { email: "faulty@memory.com" };
 
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(userDashboardRoute);
+      (activatedRouteSpy as any).paramMap = of({ get: () => { } });
+      passwordServiceSpy.request
+        .and.callFake(() => throwError(new HttpErrorResponse({
+          status: 500,
+          error: { message: errorMessage }
+        })));
+
+      fixture.detectChanges();
+
+      element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
+
+      expect(loadingServiceSpy.hide).toHaveBeenCalled();
+      expect(loadingServiceSpy.show).toHaveBeenCalled();
+
+      expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
+
+      expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
+      expect(dialogServiceSpy.success).not.toHaveBeenCalledWith(errorMessage);
+
+      expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+    });
+
+    it("should fail to send the request link because backend thinks that the input is invalid", () => {
+      component.model = { email: "no@memory.com" };
+
+      (activatedRouteSpy as any).paramMap = of({ get: () => { } });
+      passwordServiceSpy.request
+        .and.callFake(() => throwError({
+          status: 422,
+          error: {
+            data: [
+              { field: "email", message: "Email not found." }
+            ]
+          }
+        }));
+
+      fixture.detectChanges();
+
+      element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
+
+      expect(loadingServiceSpy.show).toHaveBeenCalled();
+      expect(loadingServiceSpy.hide).toHaveBeenCalled();
+
+      expect(passwordServiceSpy.request).toHaveBeenCalledWith(component.model.email);
+
+      expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+      expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+
+      expect(formUtilitiesServiceSpy.showValidationErrors).toHaveBeenCalled();
+
+      expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+    });
   });
 
-  it("should fail to reset upon a invalid token", () => {
-    const token        = "y8qjv97a0nxmh0s452bt";
-    const errorMessage = "Invalid token.";
-    const formValue    = {
-      email: "user@provider.io",
-      password: {
-        password: "mynewpassword",
-        password_confirmation: "mynewpassword"
-      },
-      token
-    };
+  describe("resetPassword", () => {
+    it("should reset the password", () => {
+      const token          = "m52308asaphg0asdfh3";
+      const successMessage = "Password redefined!";
+      const formValue      = {
+        email: "user@provider.io",
+        password: {
+          password: "mynewpassword",
+          password_confirmation: "mynewpassword"
+        },
+        token
+      };
 
-    (activatedRouteSpy as any).paramMap = of({ get: () => ({ token }) });
-    passwordServiceSpy.reset
-      .and.callFake(() => throwError(new HttpErrorResponse({
-        status: 422,
-        error: {
-          data: "invalid_token",
-          message: errorMessage
-        }
-      })));
+      (activatedRouteSpy as any).paramMap = of({ get: () => token });
+      passwordServiceSpy.reset
+        .and.callFake(() => of({ message: successMessage }));
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    component.form.patchValue(formValue);
+      component.form.patchValue(formValue);
 
-    fixture.detectChanges();
+      fixture.detectChanges();
 
-    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
+      element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
 
-    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
+      expect(component.hasToken).toBe(true);
+
+      expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
         email: formValue.email,
         token: formValue.token,
         ...formValue.password
       });
 
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
-    expect(loadingServiceSpy.hide).toHaveBeenCalled();
+      expect(loadingServiceSpy.show).toHaveBeenCalled();
+      expect(loadingServiceSpy.hide).toHaveBeenCalled();
 
-    expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
-    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+      expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+      expect(dialogServiceSpy.success).toHaveBeenCalledWith(successMessage);
 
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(passwordResetRequestRoute);
-  });
-
-  it("should fail reset upon a invalid email", () => {
-    const token        = "mb9fx7zm0H4fXha0bhq4";
-    const errorMessage = "Check the input.";
-    const formValue    = {
-      email: "not-mine@email.co",
-      password: {
-        password: "nonono",
-        password_confirmation: "nonono"
-      },
-      token
-    };
-
-    (activatedRouteSpy as any).paramMap = of({ get: () => ({ token }) });
-    passwordServiceSpy.reset
-      .and.callFake(() => throwError(new HttpErrorResponse({
-        status: 422,
-        error: {
-          data: [{ field: "email", message: "E-mail not found." }],
-          message: errorMessage
-        }
-      })));
-
-    fixture.detectChanges();
-
-    component.form.patchValue(formValue);
-
-    fixture.detectChanges();
-
-    element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
-
-    expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
-      email: formValue.email,
-      token: formValue.token,
-      ...formValue.password
+      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(userDashboardRoute);
     });
 
-    expect(loadingServiceSpy.show).toHaveBeenCalled();
-    expect(loadingServiceSpy.hide).toHaveBeenCalled();
+    it("should fail to reset upon a invalid token", () => {
+      const token        = "y8qjv97a0nxmh0s452bt";
+      const errorMessage = "Invalid token.";
+      const formValue    = {
+        email: "user@provider.io",
+        password: {
+          password: "mynewpassword",
+          password_confirmation: "mynewpassword"
+        },
+        token
+      };
 
-    expect(dialogServiceSpy.error).not.toHaveBeenCalled();
-    expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+      (activatedRouteSpy as any).paramMap = of({ get: () => ({ token }) });
+      passwordServiceSpy.reset
+        .and.callFake(() => throwError(new HttpErrorResponse({
+          status: 422,
+          error: {
+            data: "invalid_token",
+            message: errorMessage
+          }
+        })));
 
-    expect(formUtilitiesServiceSpy.showValidationErrors).toHaveBeenCalled();
+      fixture.detectChanges();
 
-    expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+      component.form.patchValue(formValue);
+
+      fixture.detectChanges();
+
+      element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
+
+      expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
+          email: formValue.email,
+          token: formValue.token,
+          ...formValue.password
+        });
+
+      expect(loadingServiceSpy.show).toHaveBeenCalled();
+      expect(loadingServiceSpy.hide).toHaveBeenCalled();
+
+      expect(dialogServiceSpy.error).toHaveBeenCalledWith(errorMessage);
+      expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+
+      expect(routerSpy.navigateByUrl).toHaveBeenCalledWith(passwordResetRequestRoute);
+    });
+
+    it("should fail reset upon a invalid email", () => {
+      const token        = "mb9fx7zm0H4fXha0bhq4";
+      const errorMessage = "Check the input.";
+      const formValue    = {
+        email: "not-mine@email.co",
+        password: {
+          password: "nonono",
+          password_confirmation: "nonono"
+        },
+        token
+      };
+
+      (activatedRouteSpy as any).paramMap = of({ get: () => ({ token }) });
+      passwordServiceSpy.reset
+        .and.callFake(() => throwError(new HttpErrorResponse({
+          status: 422,
+          error: {
+            data: [{ field: "email", message: "E-mail not found." }],
+            message: errorMessage
+          }
+        })));
+
+      fixture.detectChanges();
+
+      component.form.patchValue(formValue);
+
+      fixture.detectChanges();
+
+      element.query(By.css("form")).triggerEventHandler("submit", FakeEvent);
+
+      expect(passwordServiceSpy.reset).toHaveBeenCalledWith({
+        email: formValue.email,
+        token: formValue.token,
+        ...formValue.password
+      });
+
+      expect(loadingServiceSpy.show).toHaveBeenCalled();
+      expect(loadingServiceSpy.hide).toHaveBeenCalled();
+
+      expect(dialogServiceSpy.error).not.toHaveBeenCalled();
+      expect(dialogServiceSpy.success).not.toHaveBeenCalled();
+
+      expect(formUtilitiesServiceSpy.showValidationErrors).toHaveBeenCalled();
+
+      expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
+    });
   });
 });

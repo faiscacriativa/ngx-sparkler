@@ -21,9 +21,9 @@ import { FormConfig } from "./form.config";
 })
 export class ChangePasswordComponent implements OnInit {
 
-  public form = new FormGroup({ });
+  public form = new FormGroup({});
   public fields: FormlyFieldConfig[];
-  public model: any = { };
+  public model: any = {};
 
   constructor(
     @Inject(USER_DASHBOARD_ROUTE) private dashboardRoute: string,
@@ -48,22 +48,22 @@ export class ChangePasswordComponent implements OnInit {
     this.loading.show();
 
     const { password, password_confirmation } = this.model.password;
-    const data = Object.assign({ }, this.model, { password, password_confirmation });
+    const data = Object.assign({}, this.model, { password, password_confirmation });
 
     this.password.change(data)
       .pipe(catchError((response: HttpErrorResponse) => {
-          this.loading.hide();
+        this.loading.hide();
 
-          switch (response.status) {
+        switch (response.status) {
           case 422:
             this.formUtils.showValidationErrors(this.fields, response.error.data);
             break;
           default:
             this.dialog.error(response.error.message);
-          }
+        }
 
-          return EMPTY;
-        }))
+        return EMPTY;
+      }))
       .subscribe((response: ApiResponse) => {
         this.loading.hide();
         this.dialog.success(response.message)

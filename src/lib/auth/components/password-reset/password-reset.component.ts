@@ -110,11 +110,14 @@ export class PasswordResetComponent implements OnInit {
         catchError((response: HttpErrorResponse) => {
           this.loading.hide();
 
-          if (response.error.data === "invalid_token") {
-            this.dialog.error(response.error.message)
-              .then(() => this.router.navigateByUrl(this.requestRoute));
-          } else if (response.error.data) {
-            this.formUtils.showValidationErrors(this.fields, response.error.data);
+          /* istanbul ignore else */
+          if (response.error.data) {
+            if (response.error.data === "invalid_token") {
+              this.dialog.error(response.error.message)
+                .then(() => this.router.navigateByUrl(this.requestRoute));
+            } else {
+              this.formUtils.showValidationErrors(this.fields, response.error.data);
+            }
           }
 
           return EMPTY;
