@@ -42,6 +42,8 @@ export {
 
 export {
   API_URL,
+  USER_SETTINGS_STORAGE_KEY,
+  USER_SETTINGS_DEFAULTS,
 
   ApiResponse,
   HttpOptions,
@@ -54,6 +56,7 @@ export {
   HttpService,
   PlatformService,
   UrlService,
+  UserSettingsService,
 
   convertToUTCDate,
   getUTCTime,

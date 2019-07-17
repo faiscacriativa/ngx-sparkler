@@ -1,15 +1,23 @@
-export const FakeLocalStorage = {
+export interface LocalStorageInterface {
+  store: any;
+  getItem(key: string): string;
+  setItem(key: string, value: any): any;
+  removeItem(key: string): void;
+  clear(): void;
+}
+
+export const FakeLocalStorage: LocalStorageInterface = {
   store: { } as any,
   getItem: (key: string): string => {
     return key in FakeLocalStorage.store ? FakeLocalStorage.store[key] : null;
   },
-  setItem: (key: string, value: string) => {
+  setItem: (key: string, value: string): any => {
     FakeLocalStorage.store[key] = `${value}`;
   },
-  removeItem: (key: string) => {
+  removeItem: (key: string): void => {
     delete FakeLocalStorage.store[key];
   },
-  clear: () => {
+  clear: (): void => {
     FakeLocalStorage.store = { };
   }
 };
