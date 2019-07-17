@@ -1,5 +1,7 @@
 import { PhoneNumberUtil } from "google-libphonenumber";
-import * as moment from "moment";
+import * as momentjs from "moment";
+
+const moment = momentjs;
 
 export function dateValidator(value: string, format: string) {
   return moment(value, format, true).isValid();

@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@angular/core";
 import { Router, UrlTree } from "@angular/router";
 
 import { EMAIL_VERIFICATION_ROUTE, USER_DASHBOARD_ROUTE } from "../injection-tokens";
-import { AuthenticationService } from "../services";
+import { AuthenticationService } from "../services/index";
 
 import { UserVerifiedGuard } from "./user-verified.guard";
 

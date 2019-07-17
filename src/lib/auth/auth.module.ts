@@ -5,6 +5,7 @@ import { RouterModule } from "@angular/router";
 import { SparklerCoreModule } from "../core/index";
 import { SparklerFormsModule } from "../forms/index";
 import { SparklerI18nModule } from "../i18n/index";
+import { SparklerUiModule } from "../ui/index";
 
 import { SPARKLER_AUTH_COMPONENTS } from "./components.bundle";
 import { SPARKLER_AUTH_FACTORIES } from "./factories.bundle";
@@ -21,7 +22,8 @@ import { AuthenticationHttpInterceptors } from "./interceptors.bundle";
 
     SparklerCoreModule,
     SparklerFormsModule,
-    SparklerI18nModule
+    SparklerI18nModule,
+    SparklerUiModule
   ],
   exports: [
     SPARKLER_AUTH_COMPONENTS

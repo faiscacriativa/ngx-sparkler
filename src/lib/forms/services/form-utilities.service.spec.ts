@@ -5,7 +5,6 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { FormlyFieldConfig, FormlyFieldConfigCache, FormlyFormOptions } from "@ngx-formly/core/lib/components/formly.field.config";
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
-import cloneDeep from "lodash/cloneDeep";
 
 import { FakeTranslateLoader, translationsStub } from "projects/ngx-sparkler/src/testing/fakes";
 
@@ -79,7 +78,7 @@ describe("FormUtilitiesService", () => {
     translate.setDefaultLang("en");
     translate.use("en");
 
-    component.fields = cloneDeep(fieldsConfig);
+    component.fields = JSON.parse(JSON.stringify(fieldsConfig));
 
     fixture.detectChanges();
   });

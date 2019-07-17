@@ -1,8 +1,7 @@
 import { Injectable, InjectionToken, Injector } from "@angular/core";
-import deepCopy from "lodash/cloneDeep";
 import { BehaviorSubject } from "rxjs";
 
-import { getSetDotNotation } from "projects/ngx-sparkler/src/lib/helpers/index";
+import { getSetDotNotation } from "../../helpers/get-set-dot-notation.helper";
 
 export const USER_SETTINGS_STORAGE_KEY = new InjectionToken<string>("User settings key in the storage");
 export const USER_SETTINGS_DEFAULTS    = new InjectionToken<any>("User settings default values");
@@ -73,7 +72,7 @@ export class UserSettingsService {
   private load(): any {
     const payload = JSON.parse(localStorage.getItem(this.storageKey));
 
-    return payload ? payload : deepCopy(this.defaults);
+    return payload ? payload : JSON.parse(JSON.stringify(this.defaults));
   }
 
   private persist(): Promise<void> {

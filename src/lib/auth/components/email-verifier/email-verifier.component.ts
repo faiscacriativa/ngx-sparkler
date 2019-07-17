@@ -5,10 +5,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { combineLatest, EMPTY } from "rxjs";
 import { catchError, mergeMap } from "rxjs/operators";
 
-import { ApiResponse } from "../../../core";
-import { DialogService, LoadingService } from "../../../ui";
+import { ApiResponse } from "../../../core/index";
+import { DialogService, LoadingService } from "../../../ui/index";
 import { EMAIL_VERIFICATION_ROUTE, USER_DASHBOARD_ROUTE } from "../../injection-tokens";
-import { EmailVerificationService } from "../../services";
+import { EmailVerificationService } from "../../services/index";
 
 @Component({
   selector: "sprk-email-verifier",
